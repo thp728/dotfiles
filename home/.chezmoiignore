@@ -35,6 +35,16 @@ Library
 !.claude/CLAUDE.md
 !.claude/settings.json
 .claude.json
+{{- if eq .chezmoi.os "linux" }}
+.config/opencode/*
+!.config/opencode/AGENTS.md
+!.config/opencode/opencode.jsonc
+!.config/opencode/cli.json
+{{- else }}
+# opencode runs only on Linux machines, which are personal ones.
+.config/opencode
+{{- end }}
+.local/share/opencode
 {{- if .work }}
 # Only the work machine runs Cursor, and its hooks bring AGENTS.md and unslop into app sessions.
 .cursor/*

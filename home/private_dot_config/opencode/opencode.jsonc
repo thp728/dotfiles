@@ -1,0 +1,35 @@
+{
+  "$schema": "https://opencode.ai/config.json",
+  // opencode's own free models need no config; JarvisLabs is the paid default.
+  "model": "jarvislabs/deepseek-v4.1-flash-1017",
+  "providers": {
+    "jarvislabs": {
+      "name": "JarvisLabs",
+      // On the personal laptop the key is a Windows user variable, which WSLENV passes into Ubuntu.
+      "env": ["JL_API_KEY"],
+      "package": "@opencode/ai/providers/openai-compatible",
+      "settings": {
+        "baseURL": "https://models.jarvislabs.net/v1"
+      },
+      // Context limits are the ones JarvisLabs advertises. It doesn't advertise output limits, so
+      // 131072 is a chosen value.
+      "models": {
+        "deepseek-v4.1-flash-1017": {
+          "name": "DeepSeek V4.1 Flash",
+          // Reasoning, tools, JSON output, and image input. INR 6.63 in, 46.44 out and 0.28 cached
+          // per 1M tokens.
+          "limit": { "context": 1048576, "output": 131072 }
+        },
+        "glm-5.3-flash": {
+          "name": "GLM-5.3 Flash",
+          "limit": { "context": 1048576, "output": 131072 }
+        },
+        "nemotron-3.5-lightning-30b-a3b-bf16": {
+          "name": "Nemotron 3.5 Lightning 30B",
+          // The cheapest model JarvisLabs lists: INR 6.63 in and 17.06 out per 1M tokens.
+          "limit": { "context": 262144, "output": 131072 }
+        }
+      }
+    }
+  }
+}

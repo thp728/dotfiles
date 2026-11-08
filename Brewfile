@@ -30,6 +30,7 @@ brew "uv"
 cask "codex" if OS.mac?
 # Linux machines are personal ones.
 cask "claude-code" if OS.linux?
+brew "opencode" if OS.linux?
 
 # Desktop, macOS only
 if OS.mac?
