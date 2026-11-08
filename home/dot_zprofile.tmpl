@@ -1,0 +1,33 @@
+# Login shells, including the non-interactive ones agents start for every command, so keep this
+# file free of subprocesses. The Homebrew and mise lines are what `brew shellenv zsh` and
+# `mise activate zsh --shims` print. Rerun those after moving either tool and update the lines.
+
+{{ $brew := "" -}}
+{{ $repository := "" -}}
+{{ if eq .chezmoi.os "darwin" }}{{ $brew = "/opt/homebrew" }}{{ $repository = $brew }}{{ end -}}
+{{ if eq .chezmoi.os "linux" }}{{ $brew = "/home/linuxbrew/.linuxbrew" }}{{ $repository = joinPath $brew "Homebrew" }}{{ end -}}
+{{ if $brew -}}
+export HOMEBREW_PREFIX="{{ $brew }}"
+export HOMEBREW_CELLAR="{{ $brew }}/Cellar"
+export HOMEBREW_REPOSITORY="{{ $repository }}"
+export INFOPATH="{{ $brew }}/share/info:${INFOPATH:-}"
+fpath[1,0]="{{ $brew }}/share/zsh/site-functions"
+
+{{ end -}}
+# Nested login shells inherit PATH and add to it again, so keep only each entry's first copy.
+typeset -U path PATH
+path=(
+  "$HOME/.local/bin"
+  "$HOME/.local/share/mise/shims"
+{{- if $brew }}
+  {{ $brew }}/bin
+  {{ $brew }}/sbin
+{{- end }}
+  $path
+)
+export PATH
+
+for f in ~/.config/zsh/local/*.zsh(N); do source "$f"; done
+
+# The skills installer (npx skills) sends telemetry unless this is set.
+export DISABLE_TELEMETRY=1

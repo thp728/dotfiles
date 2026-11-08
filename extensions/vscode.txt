@@ -1,0 +1,5 @@
+# VS Code on every machine. thp728.markdown-reading-width isn't in a marketplace: build it from
+# themes/markdown-reading-width, as its README says.
+bierner.markdown-checkbox
+bierner.markdown-mermaid
+bierner.markdown-preview-github-styles

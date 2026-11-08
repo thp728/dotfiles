@@ -1,0 +1,37 @@
+#!/usr/bin/env bash
+# pre-receive hook for the relay mirrors in ~/relay on the personal machine. `relay init` links
+# it into each mirror. It scans every pushed commit for secrets, then forwards the push to GitHub.
+# A GitHub rejection rejects the whole push, so a mirror never gets ahead of GitHub. The pushing
+# machine runs its own stricter checks in a pre-push hook before anything leaves it.
+set -euo pipefail
+
+zero=0000000000000000000000000000000000000000
+rules="$HOME/repos/dotfiles/.gitleaks.toml"
+forward=()
+
+while read -r old new ref; do
+  case "$ref" in
+    refs/heads/* | refs/tags/*) ;;
+    *) echo "relay: only branches and tags go through, not $ref"; exit 1 ;;
+  esac
+  if [ "$new" = "$zero" ]; then
+    forward+=(":$ref")
+    continue
+  fi
+  if [ "$old" = "$zero" ]; then range="$new --not --all"; else range="$old..$new"; fi
+
+  if ! gitleaks git --no-banner --redact --log-level=warn --config "$rules" --log-opts="$range" . >&2; then
+    echo "relay: gitleaks blocked $ref. Remove the finding from history, then push again."
+    exit 1
+  fi
+  forward+=("$new:$ref")
+done
+
+# origin has no fetch refspec (relay init removes it), so this push updates no tracking refs,
+# which git forbids while the pushed objects are still in quarantine.
+url=$(git config remote.origin.url)
+if ! git push --quiet "$url" "${forward[@]}"; then
+  echo "relay: GitHub rejected the push. Run 'relay fetch', merge or rebase, then push again."
+  exit 1
+fi
+echo "relay: checked and forwarded ${#forward[@]} ref(s) to $url"

@@ -1,0 +1,53 @@
+{{- if ne .chezmoi.os "windows" }}
+# Windows-side settings: WSL's VM and Windows apps.
+.wslconfig
+AppData
+{{- else }}
+# Windows gets only its own layer: WSL's settings, VS Code's settings, and the app and extension
+# scripts. Everything else lives in Ubuntu, and Windows keeps its own .gitconfig.
+.*
+!.wslconfig
+{{- end }}
+{{- if ne .chezmoi.os "darwin" }}
+# Ghostty has no Windows or WSL build.
+.config/ghostty
+# macOS app settings, such as the editors'.
+Library
+{{- end }}
+
+# Never versioned: auth, sessions, history, databases, caches and memories. Agent folders are
+# ignored except the files listed with !, so whatever a tool adds later stays out. To manage
+# another file in one of them, add a ! line here first.
+.codex/*
+!.codex/AGENTS.md
+!.codex/config.toml
+.claude/*
+!.claude/CLAUDE.md
+!.claude/settings.json
+.claude.json
+{{- if .work }}
+# Only the work machine runs Cursor, and its hooks bring AGENTS.md and unslop into app sessions.
+.cursor/*
+!.cursor/hooks.json
+!.cursor/hooks
+{{- else }}
+.cursor
+{{- end }}
+.t3
+.copilot
+
+# A machine's own agent instructions, and the improvements log, which can quote its sessions.
+.agents/AGENTS.work.md
+.agents/improvements.md
+
+# Credentials and history outside the agent folders. Of ~/.ssh, only config is managed.
+.ssh/*
+!.ssh/config
+.netrc
+.npmrc
+.vstsnpmauthrc
+.docker/config.json
+.azure
+.config/gh/hosts.yml
+.zsh_history
+.local/share/atuin

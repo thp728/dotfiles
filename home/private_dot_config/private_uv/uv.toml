@@ -1,0 +1,3 @@
+# Venvs built on Homebrew's Python break when brew autoremoves or upgrades it, so use only
+# Pythons uv installs itself.
+python-preference = "only-managed"

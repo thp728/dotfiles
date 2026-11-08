@@ -1,0 +1,23 @@
+[settings]
+# Lets mise read the .nvmrc files repos already ship, so teammates on nvm and you share one pin.
+idiomatic_version_file_enable_tools = ["node"]
+
+[tools]
+node = "22"
+bun = "1.3.13"
+{{- if not .work }}
+# The default Node package manager. A work machine pins its own in conf.d/work.toml, which this
+# file would override.
+pnpm = "12.16.1"
+{{- end }}
+"npm:@tobilu/qmd" = "0.9.0"
+"npm:typescript" = "6.0.2"
+# backpass trains AGENTS.md and skills from local session transcripts. acpx runs its model calls
+# through an agent that's already signed in.
+"npm:backpass" = "0.1.44"
+"npm:acpx" = "0.21.1"
+{{- if not .work }}
+# Codex for personal machines. A work machine gets it from its own setup. Claude Code comes from the
+# Brewfile, since its npm package needs an install script that mise's npm installer skips.
+"npm:@openai/codex" = "0.167.0"
+{{- end }}

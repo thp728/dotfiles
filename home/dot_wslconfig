@@ -1,0 +1,10 @@
+# WSL 2 VM settings, from ~/repos/dotfiles.
+[wsl2]
+# A ceiling, not a reservation: Linux and Docker's containers share it, and Windows keeps the rest.
+memory=12GB
+
+[experimental]
+# Give cached memory back to Windows gradually after builds and containers finish.
+autoMemoryReclaim=gradual
+# New virtual disks hand freed space back to Windows.
+sparseVhd=true

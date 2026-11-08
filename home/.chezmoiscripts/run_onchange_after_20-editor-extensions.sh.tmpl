@@ -1,0 +1,29 @@
+{{- if eq .chezmoi.os "darwin" -}}
+{{- $dir := joinPath .chezmoi.workingTree "extensions" -}}
+#!/bin/sh
+# Installs the editor extensions in extensions/ that are missing. Reruns when a list changes.
+# Lists hash: {{ range list "common" "languages" "cursor" "vscode" }}{{ include (joinPath $dir (print . ".txt")) | sha256sum | trunc 12 }} {{ end }}
+set -eu
+dir="{{ $dir }}"
+
+install() {
+  editor=$1
+  shift
+  if ! command -v "$editor" >/dev/null; then
+    echo "$editor not found, skipped its extensions"
+    return 0
+  fi
+  installed="$("$editor" --list-extensions | tr '[:upper:]' '[:lower:]')"
+  sed 's/#.*//; /^[[:space:]]*$/d' "$@" | while read -r ext; do
+    lower="$(printf '%s' "$ext" | tr '[:upper:]' '[:lower:]')"
+    printf '%s\n' "$installed" | grep -qx "$lower" || "$editor" --install-extension "$ext"
+  done
+}
+
+{{ if .work -}}
+install cursor "$dir/common.txt" "$dir/languages.txt" "$dir/cursor.txt"
+install code "$dir/common.txt" "$dir/vscode.txt"
+{{- else -}}
+install code "$dir/common.txt" "$dir/languages.txt" "$dir/vscode.txt"
+{{- end }}
+{{ end -}}

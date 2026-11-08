@@ -1,0 +1,38 @@
+# Theme
+theme = t3-dark
+
+# Font
+font-family = JetBrainsMono Nerd Font
+font-size = 15
+font-thicken = true
+
+# Window
+window-padding-x = 10
+window-padding-y = 10
+background-opacity = 1
+window-padding-balance = true
+window-colorspace = display-p3
+
+# Cursor
+cursor-style = bar
+cursor-style-blink = true
+
+# Shell Integration
+shell-integration = detect
+shell-integration-features = cursor,sudo,title
+
+# Scrollback
+scrollback-limit = 50000
+
+# macOS
+macos-titlebar-style = tabs
+macos-option-as-alt = left
+macos-secure-input-indication = true
+
+# UX
+mouse-hide-while-typing = true
+
+# Keys
+# Splits use Ghostty's defaults: cmd+d right, cmd+shift+d down, cmd+[ and cmd+] to move,
+# cmd+shift+enter to zoom. global: works from any app and needs Accessibility access.
+keybind = global:ctrl+grave_accent=toggle_quick_terminal

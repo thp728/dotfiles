@@ -1,0 +1,6 @@
+interface:
+  display_name: "Windows LAN SSH"
+  short_description: "Work on the personal Windows laptop over SSH"
+  default_prompt: "Use $windows-lan-ssh to work on my personal Windows laptop."
+policy:
+  allow_implicit_invocation: true

@@ -1,0 +1,4 @@
+# Every editor on every machine.
+esbenp.prettier-vscode
+pkief.material-icon-theme
+teabyii.ayu

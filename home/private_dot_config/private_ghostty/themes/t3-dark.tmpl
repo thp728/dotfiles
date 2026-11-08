@@ -1,0 +1,13 @@
+# T3 Code's default dark terminal, rendered from ~/repos/dotfiles/home/.chezmoidata/t3.toml.
+# Selection is T3's #b4cbff at 25% over black, since Ghostty colors take no alpha.
+{{- $t := .t3.terminal }}
+background = {{ $t.background }}
+foreground = {{ $t.foreground }}
+cursor-color = {{ $t.cursor }}
+cursor-text = {{ $t.background }}
+selection-background = {{ $t.selection_opaque }}
+selection-foreground = {{ $t.foreground }}
+
+{{ range $i, $color := $t.ansi -}}
+palette = {{ $i }}={{ $color }}
+{{ end -}}

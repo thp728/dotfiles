@@ -1,0 +1,11 @@
+#!/bin/sh
+# Runs one chezmoi command against the portable source, then the work source where this machine has
+# one. Meant for apply, diff, status and verify. Add files with chezmoi or czw, so each lands in one repo.
+set -eu
+
+chezmoi "$@"
+
+czw="$HOME/repos/dotfiles-work/.tools/czw"
+if [ -x "$czw" ]; then
+  "$czw" "$@"
+fi

@@ -1,0 +1,16 @@
+# fzf defaults, read through FZF_DEFAULT_OPTS_FILE. Colors are T3 Code's default dark theme, from
+# ~/repos/dotfiles/home/.chezmoidata/t3.toml.
+{{- $c := .t3 }}
+--height=40%
+--layout=reverse
+--border=rounded
+--info=inline
+--prompt="> "
+--pointer=">"
+--marker=">"
+--color=bg:{{ $c.background }},bg+:{{ $c.message_surface }}
+--color=fg:{{ $c.foreground }},fg+:{{ $c.foreground }},query:{{ $c.foreground }}
+--color=hl:{{ $c.info_text }},hl+:{{ $c.info_text }}
+--color=border:#2a2a2a,separator:#2a2a2a,scrollbar:#2a2a2a
+--color=info:{{ $c.muted_foreground }},header:{{ $c.muted_foreground }}
+--color=prompt:{{ $c.primary }},pointer:{{ $c.primary }},spinner:{{ $c.info_text }},marker:{{ $c.success_text }}

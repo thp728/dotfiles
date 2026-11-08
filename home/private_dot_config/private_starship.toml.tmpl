@@ -1,0 +1,106 @@
+"$schema" = 'https://starship.rs/config-schema.json'
+
+# A folder pill and, inside a repo, a git pill, with the time at the far right. Then the input
+# line, with how long the last command took at the far right. Only git status runs a program,
+# so prompts stay fast.
+# Icons are written as escapes because editors and tools tend to drop Nerd Font private-use
+# characters: \uE0B6 and \uE0B4 are the rounded pill ends. They need a Nerd Font.
+format = """
+[\uE0B6](fg:blue)$directory[\uE0B4](fg:blue)\
+( [\uE0B6](fg:surface)$git_branch$git_state$git_status[\uE0B4](fg:surface))$fill$time
+$jobs$character"""
+
+right_format = "$cmd_duration"
+
+add_newline = true
+# The first git status in a big repo can pass the 500 ms default while git's file monitor starts.
+command_timeout = 1000
+palette = "t3"
+
+# T3 Code's default dark theme, from ~/repos/dotfiles/home/.chezmoidata/t3.toml. The names match the
+# ayu palette below, so either works with the same modules. base is the folder pill's text, white
+# on T3's blue as in T3 itself.
+{{- $c := .t3 }}
+[palettes.t3]
+base = "#ffffff"
+surface = "{{ $c.message_surface }}"
+muted = "{{ $c.muted_foreground }}"
+blue = "{{ $c.primary }}"
+green = "{{ $c.success_text }}"
+yellow = "{{ $c.warning_text }}"
+orange = "{{ $c.warning }}"
+red = "{{ $c.error_text }}"
+gold = "{{ $c.info_text }}"
+
+[palettes.ayu]
+base = "#0B0E14"
+surface = "#1A2232"
+muted = "#565B66"
+blue = "#59C2FF"
+green = "#AAD94C"
+yellow = "#FFB454"
+orange = "#FF8F40"
+red = "#F87178"
+gold = "#E6B450"
+
+[directory]
+format = "[\U000F024B $path$read_only]($style)"
+# Inside a repo the repo's own folder is bold, so you can see where you are relative to it.
+repo_root_format = "[\U000F024B $before_root_path]($before_repo_root_style)[$repo_root]($repo_root_style)[$path$read_only]($style)"
+style = "fg:base bg:blue"
+before_repo_root_style = "fg:base bg:blue"
+repo_root_style = "fg:base bg:blue bold"
+read_only = " \U000F033E"
+read_only_style = "fg:base bg:blue"
+home_symbol = "~"
+truncation_length = 2
+
+[git_branch]
+format = "[$symbol$branch]($style)"
+symbol = "\U000F062C "
+style = "fg:green bg:surface"
+truncation_length = 40
+truncation_symbol = "…"
+
+[git_state]
+format = "[ $state( $progress_current/$progress_total)]($style)"
+style = "fg:orange bg:surface bold"
+
+[git_status]
+format = "([$all_status$ahead_behind]($style))"
+style = "fg:yellow bg:surface"
+conflicted = " =${count}"
+ahead = " ⇡${count}"
+behind = " ⇣${count}"
+diverged = " ⇡${ahead_count}⇣${behind_count}"
+untracked = " ?${count}"
+stashed = " ≡${count}"
+modified = " !${count}"
+staged = " +${count}"
+renamed = " »${count}"
+deleted = " ✘${count}"
+
+[jobs]
+format = "[$symbol$number]($style) "
+symbol = "✦"
+number_threshold = 1
+symbol_threshold = 1
+style = "fg:blue bold"
+
+[fill]
+symbol = " "
+
+[cmd_duration]
+min_time = 2000
+format = "[\U000F199F $duration]($style)"
+style = "fg:yellow"
+
+[time]
+disabled = false
+format = "[$time]($style)"
+style = "fg:muted"
+time_format = "%-I:%M %p"
+
+[character]
+success_symbol = "[❯](bold gold)"
+error_symbol = "[❯](bold red)"

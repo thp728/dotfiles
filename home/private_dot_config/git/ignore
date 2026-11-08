@@ -1,0 +1,7 @@
+.ua/
+AGENTS.override.md
+# Claude Code's machine-local settings.
+**/.claude/settings.local.json
+# agentmemory's local data, created wherever its server starts.
+**/state_store.db/
+**/stream_store/

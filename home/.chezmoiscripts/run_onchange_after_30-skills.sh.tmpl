@@ -1,0 +1,26 @@
+{{- if or (eq .chezmoi.os "darwin") (eq .chezmoi.os "linux") -}}
+#!/bin/sh
+# Installs every skill in ~/.agents/.skill-lock.json that's missing from ~/.agents/skills, at its
+# latest version. The repo keeps only the lock, not the skills' files.
+# Lock hash: {{ include (joinPath .chezmoi.sourceDir "dot_agents/dot_skill-lock.json") | sha256sum }}
+set -eu
+lock="$HOME/.agents/.skill-lock.json"
+[ -f "$lock" ] || exit 0
+command -v npx >/dev/null || { echo "npx not found, skipped installing skills"; exit 0; }
+python3 - "$lock" <<'PY' | while read -r source names; do
+import json, os, sys
+from collections import defaultdict
+missing = defaultdict(list)
+for name, skill in json.load(open(sys.argv[1]))["skills"].items():
+    if not os.path.isdir(os.path.expanduser(f"~/.agents/skills/{name}")):
+        missing[skill["source"]].append(name)
+for source, names in missing.items():
+    print(source, " ".join(names))
+PY
+  echo "installing from $source: $names"
+  set --
+  for n in $names; do set -- "$@" -s "$n"; done
+  # Codex and Cursor read ~/.agents/skills itself, and Claude Code gets a link in ~/.claude/skills.
+  DISABLE_TELEMETRY=1 npx --yes skills add "$source" -g -y -a codex -a cursor -a claude-code "$@" </dev/null
+done
+{{ end -}}

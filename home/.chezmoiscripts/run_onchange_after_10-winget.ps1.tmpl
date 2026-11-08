@@ -1,0 +1,11 @@
+{{- if eq .chezmoi.os "windows" -}}
+# winget.txt hash: {{ include (joinPath .chezmoi.workingTree "winget.txt") | sha256sum }}
+$ids = Get-Content '{{ joinPath .chezmoi.workingTree "winget.txt" }}' | ForEach-Object { ($_ -replace '#.*', '').Trim() } | Where-Object { $_ }
+foreach ($id in $ids) {
+  winget list --id $id --exact --disable-interactivity | Out-Null
+  if ($LASTEXITCODE -eq 0) { continue }
+  Write-Output "installing $id"
+  winget install --id $id --exact --silent --accept-package-agreements --accept-source-agreements --disable-interactivity
+  if ($LASTEXITCODE -ne 0) { Write-Output "!! $id failed with exit code $LASTEXITCODE" }
+}
+{{ end -}}

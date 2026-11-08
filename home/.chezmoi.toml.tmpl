@@ -1,0 +1,34 @@
+{{- /* Prompt texts are the keys for chezmoi init --promptBool and --promptString, so keep them free of commas. */ -}}
+{{- $work := promptBoolOnce . "work" "Work machine" -}}
+{{- $name := promptStringOnce . "name" "Git name" "" -}}
+{{- $email := promptStringOnce . "email" "Git email" "" -}}
+{{- $localEmail := promptStringOnce . "localEmail" "Git email for local-only repos or empty" "" -}}
+{{- $notesVault := promptStringOnce . "notesVault" "Notes vault path or empty" "" -}}
+{{- $notesProfile := promptStringOnce . "notesProfile" "Profile note path in the vault or empty" "" -}}
+{{- $notesIndex := promptStringOnce . "notesIndex" "Index note path in the vault or empty" "" -}}
+{{- $notesDaily := promptStringOnce . "notesDaily" "Daily notes folder in the vault or empty" "" -}}
+{{- $notesLedger := promptStringOnce . "notesLedger" "Contributions ledger path in the vault or empty" "" -}}
+{{- $notesSeeds := promptStringOnce . "notesSeeds" "Post seeds path in the vault or empty" "" -}}
+{{- $laptopHost := promptStringOnce . "laptopHost" "Personal laptop address or empty" "" -}}
+{{- $laptopUser := promptStringOnce . "laptopUser" "Personal laptop Windows account or empty" "" -}}
+{{- $laptopKey := promptStringOnce . "laptopKey" "Personal laptop SSH key path or empty" "" -}}
+sourceDir = {{ joinPath .chezmoi.homeDir "repos/dotfiles" | quote }}
+
+[git]
+    autoCommit = true
+    autoPush = false
+
+[data]
+    work = {{ $work }}
+    name = {{ $name | quote }}
+    email = {{ $email | quote }}
+    localEmail = {{ $localEmail | quote }}
+    notesVault = {{ $notesVault | quote }}
+    notesProfile = {{ $notesProfile | quote }}
+    notesIndex = {{ $notesIndex | quote }}
+    notesDaily = {{ $notesDaily | quote }}
+    notesLedger = {{ $notesLedger | quote }}
+    notesSeeds = {{ $notesSeeds | quote }}
+    laptopHost = {{ $laptopHost | quote }}
+    laptopUser = {{ $laptopUser | quote }}
+    laptopKey = {{ $laptopKey | quote }}

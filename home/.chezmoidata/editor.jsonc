@@ -1,0 +1,81 @@
+// Settings Cursor and VS Code share. Font size is left to each machine, since it depends on the screen. chezmoi sets these keys in each editor's settings.json and
+// leaves every other key alone, so change them here, then run chezmoi apply.
+{
+  "editorSettings": {
+    "[css]": {
+      "editor.defaultFormatter": "esbenp.prettier-vscode"
+    },
+    "[html]": {
+      "editor.defaultFormatter": "esbenp.prettier-vscode"
+    },
+    "[json]": {
+      "editor.defaultFormatter": "esbenp.prettier-vscode"
+    },
+    "[jsonc]": {
+      "editor.defaultFormatter": "esbenp.prettier-vscode"
+    },
+    "[scss]": {
+      "editor.defaultFormatter": "esbenp.prettier-vscode"
+    },
+    "[typescript]": {
+      "editor.defaultFormatter": "esbenp.prettier-vscode"
+    },
+    "dotnet.backgroundAnalysis.analyzerDiagnosticsScope": "openFiles",
+    "dotnet.backgroundAnalysis.compilerDiagnosticsScope": "openFiles",
+    "editor.cursorBlinking": "expand",
+    "editor.fontFamily": "JetBrainsMono Nerd Font, JetBrains Mono",
+    "editor.fontLigatures": true,
+    "editor.formatOnSave": true,
+    "editor.linkedEditing": true,
+    "editor.minimap.enabled": false,
+    "editor.wordWrap": "on",
+    "explorer.confirmDelete": false,
+    "explorer.fileNesting.patterns": {
+      "*.db": "${capture}.${extname}-*",
+      "*.db3": "${capture}.${extname}-*",
+      "*.js": "${capture}.js.map, ${capture}.min.js, ${capture}.d.ts",
+      "*.jsx": "${capture}.js",
+      "*.s3db": "${capture}.${extname}-*",
+      "*.sdb": "${capture}.${extname}-*",
+      "*.sqlite": "${capture}.${extname}-*",
+      "*.sqlite3": "${capture}.${extname}-*",
+      "*.ts": "${capture}.js",
+      "*.tsx": "${capture}.ts",
+      "package.json": "package-lock.json, yarn.lock, pnpm-lock.yaml, bun.lockb, bun.lock",
+      "tsconfig.json": "tsconfig.*.json"
+    },
+    // The file watcher ignores .gitignore, so build output has to be excluded here.
+    "files.watcherExclude": {
+      "**/.angular/**": true,
+      "**/bin/**": true,
+      "**/dist/**": true,
+      "**/node_modules/**": true,
+      "**/obj/**": true
+    },
+    "git.blame.editorDecoration.enabled": true,
+    "git.blame.statusBarItem.enabled": true,
+    "git.detectWorktrees": true,
+    "git.openRepositoryInParentFolders": "always",
+    "search.exclude": {
+      "**/.angular": true,
+      "**/bin": true,
+      "**/dist": true,
+      "**/node_modules": true,
+      "**/obj": true
+    },
+    // Linux terminals start zsh as a login shell, so .zprofile puts Homebrew and mise on PATH.
+    "terminal.integrated.defaultProfile.linux": "zsh",
+    "terminal.integrated.profiles.linux": {
+      "zsh": {
+        "path": "zsh",
+        "args": ["-l"]
+      }
+    },
+    "terminal.integrated.cursorStyle": "line",
+    "terminal.integrated.fontFamily": "JetBrainsMono Nerd Font",
+    "terminal.integrated.fontLigatures.enabled": true,
+    "typescript.enablePromptUseWorkspaceTsdk": true,
+    "workbench.colorTheme": "Ayu Dark",
+    "workbench.iconTheme": "material-icon-theme"
+  }
+}

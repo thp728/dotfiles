@@ -1,0 +1,129 @@
+# Interactive shells only. Agent shells are non-interactive and stop here. Cursor sets
+# CURSOR_AGENT in its agent shells, so they stop here too if one is ever interactive.
+[[ $- != *i* || -n $CURSOR_AGENT ]] && return
+
+BREW_PREFIX="${HOMEBREW_PREFIX:-/opt/homebrew}"
+ZSH_CACHE_DIR="${XDG_CACHE_HOME:-$HOME/.cache}/zsh"
+[[ -d $ZSH_CACHE_DIR ]] || mkdir -p "$ZSH_CACHE_DIR"
+
+# Sources a tool's generated init script from a cache file instead of running the tool on every
+# start. The output only changes with the tool's version, which is part of the file name, so an
+# upgrade writes a new cache. Delete ~/.cache/zsh/init-* to force a refresh.
+_cached_init() {
+  local name=$1 version=$2
+  shift 2
+  [[ -n $version ]] || return 0
+  local cache="$ZSH_CACHE_DIR/init-$name-$version.zsh"
+  if [[ ! -s $cache ]]; then
+    rm -f "$ZSH_CACHE_DIR"/init-$name-*.zsh(N)
+    "$@" >| "$cache" 2>/dev/null || { rm -f "$cache"; return 0; }
+  fi
+  source "$cache"
+}
+
+# Sets REPLY to a Homebrew command's Cellar version, e.g. 0.10.0 from .../Cellar/zoxide/0.10.0/bin/zoxide.
+_brew_version() {
+  REPLY=
+  (( $+commands[$1] )) && REPLY=${${${commands[$1]:A}:h:h}:t}
+}
+
+# -----------------------------
+# History
+# -----------------------------
+HISTFILE="$HOME/.zsh_history"
+HISTSIZE=100000
+SAVEHIST=100000
+
+setopt SHARE_HISTORY
+setopt HIST_IGNORE_ALL_DUPS
+setopt HIST_IGNORE_SPACE
+setopt HIST_FIND_NO_DUPS
+setopt HIST_REDUCE_BLANKS
+setopt EXTENDED_HISTORY
+setopt AUTO_CD
+setopt INTERACTIVE_COMMENTS
+
+# -----------------------------
+# Completion
+# -----------------------------
+# Docker completions must be on fpath before compinit runs.
+[[ -d "$HOME/.docker/completions" ]] && fpath=("$HOME/.docker/completions" $fpath)
+
+autoload -Uz compinit
+# A full compinit checks every completion file for changes. Do that once a day, and trust the
+# dump otherwise. compinit leaves an unchanged dump's timestamp alone, hence the touch.
+() {
+  setopt local_options extended_glob
+  local dump="$ZSH_CACHE_DIR/.zcompdump"
+  if [[ -n $dump(#qN.mh-24) ]]; then
+    compinit -C -d "$dump"
+  else
+    compinit -d "$dump" && touch "$dump"
+  fi
+}
+
+zmodload zsh/complist
+
+# File-type colors for completion lists and eza, in the 16 terminal colors rather than hex, so
+# they follow whatever theme the terminal uses. Directories blue, links cyan, executables green.
+export LS_COLORS='di=1;34:ln=36:so=35:pi=33:ex=1;32:bd=1;33:cd=1;33:su=30;41:sg=30;43:tw=30;42:ow=34;42:or=31;1:mi=31;1'
+
+# fzf-tab draws the completion menu, so zsh's own menu stays off, and fzf-tab colors the
+# group headings itself, so their format has no color codes.
+zstyle ':completion:*' menu no
+zstyle ':completion:*:descriptions' format '[%d]'
+zstyle ':completion:*' matcher-list 'm:{a-z}={A-Za-z}' 'r:|=*'
+zstyle ':completion:*' list-colors "${(s.:.)LS_COLORS}"
+zstyle ':completion:*' group-name ''
+zstyle ':completion:*' use-cache on
+zstyle ':completion:*' cache-path "$ZSH_CACHE_DIR/.zcompcache"
+zstyle ':fzf-tab:complete:cd:*' fzf-preview 'eza -1 --color=always --group-directories-first $realpath'
+
+# -----------------------------
+# Tool init
+# -----------------------------
+# Node comes from the mise shims that .zprofile puts on PATH. `mise activate zsh` would add a
+# hook on every prompt and is only needed for mise's [env] and hooks, which nothing here uses.
+
+export FZF_DEFAULT_OPTS_FILE="$HOME/.config/fzf/fzfrc"
+# fzf's built-in file walker ignores .gitignore, so build caches flood Ctrl-T. fd honors it.
+export FZF_DEFAULT_COMMAND='fd --type f --hidden --follow --exclude .git'
+export FZF_CTRL_T_COMMAND="$FZF_DEFAULT_COMMAND"
+export FZF_ALT_C_COMMAND='fd --type d --hidden --follow --exclude .git'
+
+# fzf gives Ctrl-T and Alt-C. atuin loads after it and takes Ctrl-R and the up arrow.
+_brew_version fzf && _cached_init fzf "$REPLY" fzf --zsh
+_brew_version zoxide && _cached_init zoxide "$REPLY" zoxide init zsh --cmd cd
+_brew_version atuin && _cached_init atuin "$REPLY" atuin init zsh
+
+# fzf-tab must load after compinit and before the other plugins.
+[[ -f "$BREW_PREFIX/opt/fzf-tab/share/fzf-tab/fzf-tab.zsh" ]] && \
+  source "$BREW_PREFIX/opt/fzf-tab/share/fzf-tab/fzf-tab.zsh"
+
+[[ -f "$BREW_PREFIX/share/zsh-autosuggestions/zsh-autosuggestions.zsh" ]] && \
+  source "$BREW_PREFIX/share/zsh-autosuggestions/zsh-autosuggestions.zsh"
+
+# ng is a mise shim, so its version comes from mise's link to the global Angular CLI install.
+() {
+  local ng_install="$HOME/.local/share/mise/installs/npm-angular-cli/global"
+  [[ -e $ng_install ]] && _cached_init ng "${ng_install:A:t}" ng completion script
+}
+
+# -----------------------------
+# Aliases
+# -----------------------------
+alias ls='eza --group-directories-first --sort=extension'
+alias ll='eza -lh --group-directories-first --sort=extension'
+alias la='eza -lah --group-directories-first --sort=extension'
+alias tree='eza --tree --group-directories-first'
+
+# -----------------------------
+# Prompt
+# -----------------------------
+_brew_version starship && _cached_init starship "$REPLY" starship init zsh
+
+# -----------------------------
+# Must be last
+# -----------------------------
+[[ -f "$BREW_PREFIX/opt/zsh-fast-syntax-highlighting/share/zsh-fast-syntax-highlighting/fast-syntax-highlighting.plugin.zsh" ]] && \
+  source "$BREW_PREFIX/opt/zsh-fast-syntax-highlighting/share/zsh-fast-syntax-highlighting/fast-syntax-highlighting.plugin.zsh"

@@ -1,0 +1,15 @@
+# The Codex settings chezmoi sets in ~/.codex/config.toml. Everything else in that file, such as
+# the [projects] trust entries and [tui] state Codex writes itself, stays as Codex leaves it. A
+# table here is merged key by key into the same table there.
+
+[codex]
+model = "gpt-6.1-sol"
+service_tier = "default"
+personality = "pragmatic"
+
+[codex.features]
+memories = true
+
+[codex.memories]
+generate_memories = true
+use_memories = true

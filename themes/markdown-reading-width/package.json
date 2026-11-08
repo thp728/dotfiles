@@ -1,0 +1,22 @@
+{
+  "name": "markdown-reading-width",
+  "displayName": "Markdown Reading Width",
+  "description": "Centers the built-in Markdown preview at a reading width.",
+  "version": "0.1.0",
+  "publisher": "thp728",
+  "license": "UNLICENSED",
+  "files": [
+    "preview.css"
+  ],
+  "engines": {
+    "vscode": "^1.80.0"
+  },
+  "categories": [
+    "Other"
+  ],
+  "contributes": {
+    "markdown.previewStyles": [
+      "./preview.css"
+    ]
+  }
+}

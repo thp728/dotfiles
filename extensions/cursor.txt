@@ -1,0 +1,4 @@
+# Cursor's own builds. Cursor renders Mermaid itself.
+anysphere.cursorpyright
+# For the SSH link to the Windows laptop, until section 13 of the refresh decides it.
+anysphere.remote-ssh

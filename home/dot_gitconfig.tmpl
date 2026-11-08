@@ -1,0 +1,34 @@
+# Portable defaults and the personal identity. The include at the end comes last, so a machine's
+# local.gitconfig, such as a work identity, wins over anything here.
+
+[user]
+	name = {{ .name }}
+	email = {{ .email }}
+[init]
+	defaultBranch = main
+[push]
+	autoSetupRemote = true
+[fetch]
+	prune = true
+# Refuse to create a merge commit on pull. A diverged branch fails loudly instead, for agents too.
+[pull]
+	ff = only
+[rebase]
+	autoStash = true
+	autoSquash = true
+[rerere]
+	enabled = true
+[diff]
+	algorithm = histogram
+	colorMoved = default
+[merge]
+	conflictStyle = zdiff3
+[branch]
+	sort = -committerdate
+[tag]
+	sort = version:refname
+[commit]
+	verbose = true
+
+[include]
+	path = ~/.config/git/local.gitconfig

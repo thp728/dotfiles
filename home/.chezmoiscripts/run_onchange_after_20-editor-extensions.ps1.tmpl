@@ -1,0 +1,18 @@
+{{- if eq .chezmoi.os "windows" -}}
+{{- $dir := joinPath .chezmoi.workingTree "extensions" -}}
+# Lists hash: {{ range list "common" "vscode" "vscode.windows" "languages" }}{{ include (joinPath $dir (print . ".txt")) | sha256sum | trunc 12 }} {{ end }}
+# Extensions that draw the window install on Windows. Language extensions run where the code is,
+# so they install into VS Code's server inside Ubuntu.
+$dir = '{{ $dir }}'
+function Read-List([string[]]$names) {
+  foreach ($n in $names) { Get-Content (Join-Path $dir "$n.txt") | ForEach-Object { ($_ -replace '#.*', '').Trim() } | Where-Object { $_ } }
+}
+$have = @(code --list-extensions) | ForEach-Object { $_.ToLower() }
+foreach ($e in Read-List 'common', 'vscode', 'vscode.windows') {
+  if ($have -notcontains $e.ToLower()) { code --install-extension $e }
+}
+$haveUbuntu = @(wsl -d Ubuntu --shell-type login -- code --list-extensions 2>$null) | ForEach-Object { $_.ToLower() }
+foreach ($e in Read-List 'languages') {
+  if ($haveUbuntu -notcontains $e.ToLower()) { wsl -d Ubuntu --shell-type login -- code --install-extension $e }
+}
+{{ end -}}

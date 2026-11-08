@@ -1,0 +1,10 @@
+{{- $brew := "" -}}
+{{- if eq .chezmoi.os "darwin" }}{{ $brew = "/opt/homebrew/bin/brew" }}{{ end -}}
+{{- if eq .chezmoi.os "linux" }}{{ $brew = "/home/linuxbrew/.linuxbrew/bin/brew" }}{{ end -}}
+{{- if $brew -}}
+#!/bin/sh
+# Brewfile hash: {{ include (joinPath .chezmoi.workingTree "Brewfile") | sha256sum }}
+# Homebrew itself is installed by hand, since it needs root once. The refresh checklist has the steps.
+[ -x "{{ $brew }}" ] || { echo "Homebrew isn't installed at {{ $brew }}, skipped the Brewfile"; exit 0; }
+exec "{{ $brew }}" bundle --no-upgrade --file="{{ joinPath .chezmoi.workingTree "Brewfile" }}"
+{{ end -}}

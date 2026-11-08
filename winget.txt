@@ -1,0 +1,10 @@
+# Windows apps for the personal laptop, installed by .chezmoiscripts/run_onchange_after_10-winget.ps1.tmpl
+# when missing. It never upgrades: run `winget upgrade --id <id>` for that.
+Microsoft.VisualStudioCode
+Microsoft.WindowsTerminal
+Microsoft.PowerShell
+Git.Git
+Docker.DockerDesktop
+T3Tools.T3Code
+twpayne.chezmoi
+DEVCOM.JetBrainsMonoNerdFont

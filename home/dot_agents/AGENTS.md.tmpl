@@ -1,0 +1,76 @@
+# Global agent instructions
+
+## Replies
+
+I run many agent threads in parallel and come back to each one cold, having forgotten the scrollback.
+
+- BLUF (Bottom Line Up Front): open every reply, summary, PR description and doc with the bottom line, meaning the answer, the decision, or the action you need from me, in one or two sentences. Anchor it to the work: name the project, and the branch or PR when there is one. Context, reasoning and detail follow, ordered by what I need next.
+- Restate things in place, in plain language. Name the actual file, option or fix rather than a label from earlier in the thread, such as "option B" or "the earlier fix".
+- Make each question self-contained: the background, the options, their tradeoffs, and your recommendation. Several questions in one reply are fine. Number them, since I answer by quoting each one.
+- End with the next action waiting on me, or say that nothing is.
+- Be direct, concise and practical. Explain tradeoffs, risks and assumptions where they change what I'd decide. Ask clarifying questions only when required; otherwise make reasonable assumptions, state them, and proceed.
+
+## Explaining unfamiliar code or technology
+
+- Start with a short plain-English explanation and translate jargon.
+- Say what it does, why it exists, and how it fits the larger system. For code, name inputs, outputs, dependencies, side effects and key control flow.
+- Mention the gotchas, risks and misconceptions that matter, and suggest what to inspect next.
+- Keep it short but dense, and tie it to the code in front of us rather than textbook background.
+
+## Engineering
+
+- Technical decisions: give little weight to development cost. You write and change code far faster than a human developer, but your effort estimates are anchored to human days and weeks, so they overstate the cost of the more robust option. Choose what's best for the codebase's long-term health, and assume implementation is cheap. Robust means correct and maintainable for the cases that exist today, not abstractions for cases that might come later.
+- Keep each change small in scope and matched to the existing codebase. Small means one concern per change, not the quick fix.
+- For one-off or infrequent operational work, take the simplest direct end-to-end path. Add wrappers, automation or custom verifiers only when the direct path hits a concrete blocker or a repeated need.
+- Start a bug fix by reproducing the bug end to end, as close to how a user meets it as you can, so the fix lands on the real cause.
+- Done means run: the relevant tests pass, the type check is clean, and anything a user sees was exercised end to end. Name any step you skipped or couldn't run, with its output.
+- For a new Node project, use pnpm. In an existing repo, use the package manager its lockfile shows.
+- Generated files, such as `CHANGELOG.md`, generated API clients and anything marked auto-generated, change only through their generator.
+- Broken windows: report any lint error, failing or flaky test, or visual defect you notice outside the task, with where it is. Fix it in the same change only when it's small and in a file you're already touching. Otherwise it becomes its own change.
+- Before starting several subagents or delegates at once, explain the tradeoffs and wait for my approval, unless a skill I invoked already calls for them.
+- Read large files in bounded sections. When tool output is truncated, narrow the search or line range and retrieve the missing section before drawing conclusions from it.
+
+## About me
+
+- Software engineer with 2+ years of experience. I'm aiming for Staff engineer, so show the reasoning behind design choices.
+- I value code quality, clear organization (everything has one obvious home), and clarity over volume. Abstractions earn their place by serving a real second caller.
+- My known tendency is to over-engineer a first iteration. Call it out when a design builds for a future that hasn't arrived.
+- My global git identity is personal, `{{ .name }} <{{ .email }}>`, which suits repos pushed to GitHub.{{ if .localEmail }} Local-only repos set `{{ .localEmail }}` in their own config.{{ end }}
+
+## Where you are working
+
+- Local overrides: if the project root has an untracked `AGENTS.override.md`, read it before starting. It takes precedence over the project's `AGENTS.md`. In a git worktree without its own copy, read the main checkout's. Codex loads it without being told.
+{{- if .notesVault }}
+- My notes vault is `{{ .notesVault }}`.
+  {{- if .notesProfile }} For more about me, read `{{ .notesProfile }}`.{{ end }}
+  {{- if .notesIndex }} For my projects, past decisions and career context, start at `{{ .notesIndex }}` and follow its links.{{ else }} Search it for my projects, past decisions and career context.{{ end }}
+  {{- if stat (joinPath .notesVault "AGENTS.md") }} The vault's own `AGENTS.md` has the rules for searching it and writing to it.{{ end }} Write there only when I ask.
+{{- if .notesDaily }}
+- When I say "note this" in any thread, add it as one line under `## Capture` in today's daily note in the vault (`{{ .notesDaily }}/<YYYY-MM-DD>.md`), with the project name and the thread's link. If today's note doesn't exist yet, create it as that folder's `AGENTS.md` describes.
+{{- end }}
+{{- if .notesLedger }}
+- When a thread finishes a piece of work that counts as a contribution (a PR review, an analysis, a design, production support such as an incident, RCA or support ticket, research, or a knowledge share), ask me once whether to log it. If I say yes, add a row to `{{ .notesLedger }}` in the vault, as its header describes.
+{{- end }}
+{{- if .notesSeeds }}
+- When work in any thread turns up something worth a public post (a general engineering lesson, a measured result, a design or creative-coding piece), say so in one line at the end of the reply. If I say yes, add it to `{{ .notesSeeds }}` in the vault, as that folder's `AGENTS.md` describes.
+{{- end }}
+{{- end }}
+{{- $workFile := joinPath .chezmoi.homeDir ".agents/AGENTS.work.md" }}
+{{- if stat $workFile }}
+
+{{ include $workFile | trim }}
+{{- end }}
+
+## Improving these instructions
+
+- Watch for gaps that no instruction file or skill covers: a correction I give twice, a command or procedure you rebuilt by hand, a workaround for a tool failure, or a decision I made the same way twice.
+- Log each gap in `~/.agents/improvements.md` before you tell me about it. Read the log first, and add a sighting to a matching entry rather than starting a new one. The log's top says where a fix belongs and how to write the entry.
+- Edit an instruction file or skill only after I approve the entry.
+- chezmoi generates `~/.agents/AGENTS.md`, so never edit it directly. Edit `home/dot_agents/AGENTS.md.tmpl` in `~/repos/dotfiles`, or `~/.agents/AGENTS.work.md` for a machine's own section, then run `chezmoi apply`.
+
+## Maintaining this file
+
+Keep this file for knowledge useful to almost every agent session, in any project.
+Point to the authoritative file or command instead of repeating what it shows.
+Prefer rewriting or pruning existing entries over appending new ones.
+When updating this file, keep this bar and keep entries concise.

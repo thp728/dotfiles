@@ -1,0 +1,17 @@
+[extend]
+useDefault = true
+
+# Generic secret rules on top of gitleaks' defaults. A machine can layer more rules on these in
+# ~/.config/gitleaks/work.toml, which the repo's hooks prefer when it exists.
+[[rules]]
+id = "azure-devops-pat"
+description = "Azure DevOps personal access token"
+regex = '''\b[A-Za-z0-9]{70,80}AZDO[A-Za-z0-9]{4}\b'''
+keywords = ["azdo"]
+
+[[rules]]
+id = "cli-pat-argument"
+description = "Token passed inline as a --pat or --token argument"
+regex = '''--(?:pat|token)["',\s]+["']?([A-Za-z0-9_\-]{20,})'''
+secretGroup = 1
+keywords = ["--pat", "--token"]

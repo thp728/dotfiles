@@ -1,0 +1,2 @@
+# VS Code on Windows only: opens folders inside Ubuntu.
+ms-vscode-remote.remote-wsl
