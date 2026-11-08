@@ -401,7 +401,7 @@ def write_obsidian(ayu):
 
 def main():
     path = sorted(glob.glob(os.path.expanduser("~/.vscode/extensions/teabyii.ayu-*/ayu-dark.json")))[-1]
-    with open(path) as f:
+    with open(path, encoding="utf-8") as f:
         ayu = json.load(f)
     keys = build(ayu)
     if "--print" in sys.argv:
