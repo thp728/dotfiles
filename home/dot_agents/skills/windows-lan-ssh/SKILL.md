@@ -39,6 +39,12 @@ b64=$(printf '%s' 'echo "$HOME"; gh auth status' | base64 | tr -d '\n')
 ssh personal-laptop "wsl -d Ubuntu -- zsh -l -c 'echo $b64 | base64 -d | zsh -l'"
 ```
 
+PowerShell commands have the same problem: nested quotes and regexes fail with `ParserError`. Write those to a file and pass it as UTF-16 base64:
+
+```sh
+ssh personal-laptop "pwsh -NoProfile -EncodedCommand $(iconv -f UTF-8 -t UTF-16LE /tmp/cmd.ps1 | base64)"
+```
+
 Interactive prompts, such as a sign-in, can fail through these layers. Have the dev run those in an Ubuntu window on the laptop.
 
 `sudo` needs the dev's password, so root work, such as `apt`, runs with `wsl -d Ubuntu -u root` instead. `wsl.exe` prints its own messages, such as `wsl --list`, in UTF-16, so prefix those with `$env:WSL_UTF8=1;` to get readable text.
