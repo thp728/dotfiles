@@ -1,7 +1,7 @@
 {{- /* chezmoi:modify-template */ -}}
 {{- /*
 Adds the "T3 Dark" scheme from .chezmoidata/t3.toml, makes it every profile's default, and makes
-the Ubuntu profile the default one. Every other key passes through. While nothing differs, the
+the Ubuntu profile the default one, starting in the Linux home folder. Every other key passes through. While nothing differs, the
 file passes through untouched.
 */ -}}
 {{- $current := dict }}
@@ -17,7 +17,7 @@ file passes through untouched.
 {{- $defaults := get $profiles "defaults" | default dict }}
 {{- $_ := set $defaults "colorScheme" "T3 Dark" }}
 {{- $_ := set $profiles "defaults" $defaults }}
-{{- range (get $profiles "list" | default list) }}{{ if and (eq (get . "name") "Ubuntu") (eq (get . "source") "Microsoft.WSL") }}{{ $_ := set $merged "defaultProfile" (get . "guid") }}{{ end }}{{ end }}
+{{- range (get $profiles "list" | default list) }}{{ if and (eq (get . "name") "Ubuntu") (eq (get . "source") "Microsoft.WSL") }}{{ $_ := set $merged "defaultProfile" (get . "guid") }}{{ $_ := set . "startingDirectory" "~" }}{{ end }}{{ end }}
 {{- $_ := set $merged "profiles" $profiles }}
 {{- if eq (toJson $current) (toJson $merged) }}
 {{- .chezmoi.stdin }}

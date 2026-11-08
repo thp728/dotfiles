@@ -8,6 +8,10 @@ AppData
 .*
 !.wslconfig
 {{- end }}
+{{- if ne .chezmoi.os "linux" }}
+# Hides the login banner on Linux only.
+.hushlogin
+{{- end }}
 {{- if ne .chezmoi.os "darwin" }}
 # Ghostty has no Windows or WSL build.
 .config/ghostty
