@@ -18,6 +18,7 @@ ssh personal-laptop '$p = [Security.Principal.WindowsPrincipal][Security.Princip
 Connected when it prints the Windows account from `~/.ssh/config`'s `User` line and the laptop's machine name. `admin: True` means every command runs with administrator rights and no UAC prompt, which is why the ask-first list below matters. When it fails:
 
 - `Could not resolve hostname`, or a timeout: the laptop is asleep, off or on another network. Ask the dev to wake it and join this Mac's Wi-Fi, then connect again.
+- No output after 10 seconds: the shared connection is stale. Run `ssh -O exit personal-laptop`, then connect again.
 - `Connection refused`: the SSH server isn't running. Follow SETUP.md, "SSH server".
 - `Permission denied (publickey)`: the agent key isn't installed. Follow SETUP.md, "Agent key".
 - A host key warning: stop and tell the dev. SETUP.md, "Host key", covers checking it.

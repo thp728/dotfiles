@@ -69,6 +69,16 @@ Created 7 Nov 2026. To recreate it:
 ssh personal-laptop 'New-Item -ItemType Directory -Force $HOME\transfer'
 ```
 
+## Preview browser libraries
+
+Installed 8 Nov 2026. T3's server in Ubuntu downloads its own headless Chrome for the browser preview, and Chrome won't start without three libraries Ubuntu leaves out. Installing them is software, so ask the dev first:
+
+```sh
+ssh personal-laptop 'wsl -d Ubuntu -u root -- apt-get install -y libnss3 libnspr4 libasound2t64'
+```
+
+Done when `ldd` on `~/.t3/tools/chrome-headless-shell/linux64/*/chrome-headless-shell` in Ubuntu prints no `not found` lines.
+
 ## Revoke access
 
 Remove the line ending in this key's comment, the last field of its `.pub` file, from `administrators_authorized_keys`, then `Restart-Service sshd`. Delete the key pair on this Mac only when the dev asks. Report which key went and whether the dev's password login still works.
