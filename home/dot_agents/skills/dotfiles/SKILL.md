@@ -18,6 +18,8 @@ Agents and apps edit the live files in `$HOME`, so the repo drifts behind them. 
 
 Templates are the exception: `chezmoi re-add` skips them, and `sync.sh` names them when they drift. `chezmoi managed --include templates` lists them. Make the edit in the source under `home/` instead, then `chezmoi apply`. `~/.agents/AGENTS.md` is one, and so are `.zprofile` and `.gitconfig`.
 
+T3's recurring scheduled tasks live only in T3's database, and `~/.config/t3-schedules/` is their source, one file per task. The portable ones are templates that render only on a machine with the vault paths their prompt needs, and work-only ones come from the work repo. After creating or changing a task, run `t3-schedules check`. For a new task, `t3-schedules export '<title>'` prints its file. For a changed one, edit its source, apply, and call `schedule_task` with the arguments the check prints.
+
 Colors live in `home/.chezmoidata/t3.toml`. Change them there, run `chezmoi apply`, then `python3 themes/editor-colors.py` for the editors. Cursor and VS Code share the keys in `home/.chezmoidata/editor.jsonc`. Change a shared key there, since a change made in an editor's settings reverts on the next apply.
 
 Commit source edits before `chezmoi add`, since its auto-commit takes every pending change. After `npx skills add`, run `chezmoi add` on the new skill folder and the lock file.
