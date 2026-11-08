@@ -79,6 +79,8 @@ ssh personal-laptop 'wsl -d Ubuntu -u root -- apt-get install -y libnss3 libnspr
 
 Done when `ldd` on `~/.t3/tools/chrome-headless-shell/linux64/*/chrome-headless-shell` in Ubuntu prints no `not found` lines.
 
+Keep `wslOnly` false in `%USERPROFILE%\.t3\userdata\desktop-settings.json`, with the WSL backend on. In T3 Nightly 0.1.8, WSL-only mode stops the Windows-side server, and the preview then loads pages without showing them. Edit the file only while T3 is closed.
+
 ## Revoke access
 
 Remove the line ending in this key's comment, the last field of its `.pub` file, from `administrators_authorized_keys`, then `Restart-Service sshd`. Delete the key pair on this Mac only when the dev asks. Report which key went and whether the dev's password login still works.
