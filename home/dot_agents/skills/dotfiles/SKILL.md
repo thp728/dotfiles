@@ -24,13 +24,19 @@ Colors live in `home/.chezmoidata/t3.toml`. Change them there, run `chezmoi appl
 
 Commit source edits before `chezmoi add`, since its auto-commit takes every pending change. After `npx skills add`, run `chezmoi add` on the new skill folder and the lock file.
 
+Without a terminal, as over SSH, `chezmoi apply` waits forever on its overwrite prompt for a file changed outside chezmoi. Run `chezmoi status` first, deal with each `MM` file, then apply with `--force`.
+
 Done when the script prints `in sync`. `cz apply`, `cz diff`, `cz status` and `cz verify` run the same command against this repo and then the work repo, where one exists.
 
 ## Which repo a file belongs in
 
 Anything that names the employer, its hosts, projects, accounts, work identity or work-only tools goes in the work repo. Everything else goes here. When a file mixes both, keep the portable part here and move the work lines into a local file that the work repo owns and the portable file reads: `~/.config/zsh/local/*.zsh`, `~/.config/git/local.gitconfig`, `~/.config/mise/conf.d/work.toml`, `~/.agents/AGENTS.work.md`.
 
+A tool that writes to `~/.gitconfig`, such as `gh auth setup-git`, puts machine settings in a generated file. Move its lines into `~/.config/git/local.gitconfig`, which `~/.gitconfig` includes last.
+
 A gitleaks pre-commit hook blocks secrets with `.gitleaks.toml`, or with `~/.config/gitleaks/work.toml` on a machine that has one, which adds that machine's own strings. When it blocks a commit, move the line to the work repo and commit again. Hooks don't travel in bundles, so run `.tools/install-hooks.sh` after every clone. `.tools/check.sh` runs the scans plus chezmoi's health checks.
+
+If chezmoi doctor's hardlink test fails with `invalid cross-device link`, rerun the check with TMPDIR set to an existing directory on the source repo's filesystem, such as `$HOME/.cache` in Ubuntu.
 
 ## Machine data
 
