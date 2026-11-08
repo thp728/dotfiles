@@ -1,20 +1,22 @@
 {{- if .laptopHost -}}
 ---
-title: Monthly laptop updates
-project: {{ if .work }}~/repos/dotfiles-work{{ else }}~/repos/dotfiles{{ end }}
+title: Monthly maintenance proposals
+project: {{ if .work }}~/repos/dotfiles-work{{ else }}{{ dir .chezmoi.sourceDir }}{{ end }}
 schedule: {"type": "interval", "everyMs": 2592000000}
 thread: new
 enabled: true
 ---
-Monthly maintenance reminder for the dev's personal Windows laptop. Use the windows-lan-ssh skill (`ssh personal-laptop`). Report only, and change nothing until the dev says yes.
+Produce monthly maintenance proposals. Read applicable dotfiles, dotfiles-work where installed, and windows-lan-ssh instructions. Report only. Do not install, upgrade, refresh package indexes, sync/apply configuration, edit instructions, export backups, push or change schedules. Never print credentials or sensitive file contents. Use inspection commands that do not automatically refresh sources or write caches; otherwise mark the check unavailable.
 
-1. Connect with the skill's connect step. If the laptop is unreachable, say so in one line and stop: it's asleep, off, or not on this Mac's Wi-Fi.
-2. Count what's pending, read-only:
-   - Ubuntu packages: `apt list --upgradable` (run through the skill's base64 form as root: `wsl -d Ubuntu -u root`).
-   - Homebrew in Ubuntu: `brew outdated`.
-   - mise tools in Ubuntu: `mise outdated`.
-   - Windows apps: `winget upgrade --disable-interactivity` (count the rows).
-   - WSL itself: `wsl --update --pre-release` is NOT wanted; just compare `wsl --version` with the latest stable if you can tell.
-3. Reply with a short table of counts and the notable items (major versions, security updates), then ask the dev one question: run the updates now?
-4. Only after a yes, run them: `sudo apt update && sudo apt full-upgrade` (as root via wsl -u root), `brew upgrade`, `mise upgrade`, and `winget upgrade --id <id>` for each app the dev agrees to. Windows Terminal comes from the Microsoft Store, so skip it in winget. Report what changed and anything that failed.
+Inspect available package-update information for the Mac and, after one bounded laptop connection, Windows and Ubuntu/WSL. Include Homebrew, mise, Ubuntu apt, Windows winget and stable WSL as applicable. Report metadata age and unavailable checks. Laptop failure must not prevent the Mac report. Never run WSL prerelease updates. Offer a manual weekend retry when useful; do not schedule retries.
+
+Inspect portable and work dotfiles source-versus-live drift using read-only checks. Resolve the configured source paths rather than assuming old checkout locations. Keep employer-specific paths, identifiers and configuration in work-owned sources. Propose exact changes, their owning source files, benefits, compatibility risks and validation.
+
+Also look for useful configuration and workflow records that exist only in live files or application state and should have a maintained source in dotfiles, as with scheduled-task definitions. Compare registered recurring tasks with their source files, including duplicate titles and reporting destinations. Distinguish task definitions from report history. For each missing-source candidate, identify the evidence, exact data worth preserving, portable versus work ownership, secrets to exclude, proposed file and restore/apply procedure. Avoid dumping application databases or transcripts, duplicating generated files, or exporting credentials. Propose additions only.
+
+Identify which local development loop is active from current project configuration, instructions and recent completed work: T3, looped-in, or both with distinct scopes. Do not infer adoption from installation alone. Review recent friction, repeated failures, review findings and relevant existing improvement logs. Hunt for concrete improvements to planning, implementation, verification, review, recovery and handoff in the active loop. Each proposal needs current evidence, the smallest useful change, its authoritative owning file, expected benefit, validation and tradeoffs. Reconcile existing proposals to avoid duplicates. Flag uncertain adoption rather than redesigning an inactive workflow. Propose only; do not edit logs, instructions, skills or configuration, and do not launch agents or run loop workflows.
+
+Do not duplicate or run the separate Monthly backpass sweep of global agent instructions. Preserve known exclusions and pending decisions in the Windows cleanup, Mac repository and Life OS threads; consult linked records in the housekeeping task sources as needed. Use confirmed paths after repository relocation. Do not assume a configured remote contains local work or that task registration proves execution.
+
+Report numbered package and configuration/workflow proposals with current/proposed versions where verified, evidence and explicit coverage gaps. Reports belong in this T3 run's thread, not an automatically written file. Wait for approval of specific changes. Do not execute upgrades or apply proposals from this scheduled prompt.
 {{ end -}}
