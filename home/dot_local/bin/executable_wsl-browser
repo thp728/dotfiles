@@ -1,0 +1,5 @@
+#!/bin/sh
+# BROWSER for WSL: opens a URL in Windows' default browser. Ubuntu 26.04 dropped wslu's wslview.
+# explorer.exe exits 1 even when it opened the page, so report success.
+/mnt/c/Windows/explorer.exe "$1"
+exit 0

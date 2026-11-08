@@ -33,6 +33,6 @@ for f in ~/.config/zsh/local/*.zsh(N); do source "$f"; done
 export DISABLE_TELEMETRY=1
 {{- if and (eq .chezmoi.os "linux") (contains "microsoft" (lower .chezmoi.kernel.osrelease)) }}
 
-# Under WSL, tools that open a browser (gh, codex login) hand the page to Windows through wslview.
-export BROWSER=wslview
+# Under WSL, tools that open a browser (gh, codex login) hand the page to Windows.
+export BROWSER=wsl-browser
 {{- end }}
