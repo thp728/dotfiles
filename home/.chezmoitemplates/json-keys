@@ -1,0 +1,16 @@
+{{- /*
+Sets the keys in .keys in the JSON (comments allowed) given as .stdin, and keeps every other key.
+While the keys already match, .stdin passes through untouched, comments and order included.
+Otherwise it's rewritten as plain JSON, which drops its comments.
+Call it as: includeTemplate "json-keys" (dict "stdin" .chezmoi.stdin "keys" .someData)
+*/ -}}
+{{- $current := dict }}
+{{- if .stdin }}{{ $current = fromJsonc .stdin }}{{ end }}
+{{- $merged := dict }}
+{{- range $key, $value := $current }}{{ $_ := set $merged $key $value }}{{ end }}
+{{- range $key, $value := .keys }}{{ $_ := set $merged $key $value }}{{ end }}
+{{- if eq (toJson $current) (toJson $merged) }}
+{{- .stdin }}
+{{- else }}
+{{- toPrettyJson $merged }}{{ "\n" }}
+{{- end -}}

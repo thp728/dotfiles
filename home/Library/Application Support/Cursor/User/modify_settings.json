@@ -1,2 +1,2 @@
 {{- /* chezmoi:modify-template */ -}}
-{{- includeTemplate "editor-settings" . -}}
+{{- includeTemplate "json-keys" (dict "stdin" .chezmoi.stdin "keys" .editorSettings) -}}

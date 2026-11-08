@@ -1,0 +1,77 @@
+// T3 Code's UI settings, shared by every machine that runs the desktop app. chezmoi sets these keys
+// in ~/.t3/userdata/client-settings.json and leaves the rest alone. Machine-specific ones stay out:
+// browser profiles, onboarding, provider model preferences, environment artwork, load balancing,
+// per-project grouping and merge overrides, and model favorites. Change a shared one here.
+{
+  "t3ClientSettings": {
+    "notificationMode": "notifications-and-sound",
+    "inAppNotificationsEnabled": true,
+    "diffColorScheme": "red-green",
+    "chatWidth": "comfortable",
+    "effortDisplay": "label",
+    "appearanceContrast": 100,
+    "panelAnimationDurationMs": 100,
+    "browserDefaultViewport": {
+      "_tag": "fill"
+    },
+    "browserDefaultZoomFactor": 1,
+    "browserDefaultAppearance": "dark",
+    "browserRecordingFrameRate": 30,
+    "browserRecordingShowKeyPresses": false,
+    "browserRecordingShowMousePresses": false,
+    "browserLinkTarget": "app",
+    "browserSearchEngine": "google",
+    "browserCustomSearchUrl": "",
+    "browserAutoShowFloatingPreview": true,
+    "confirmQuit": "direct",
+    "confirmThreadArchive": false,
+    "confirmThreadDelete": true,
+    "confirmThreadUnpin": false,
+    "diffFilesCollapsed": true,
+    "diffIgnoreWhitespace": true,
+    "diffLayout": "split",
+    "glassOpacity": 80,
+    "fontSizeInterface": 16,
+    "fontSizePrompt": 14,
+    "fontSizeCode": 13,
+    "fontSizeTerminal": 12,
+    "fontFamilyCode": "JetBrainsMono Nerd Font",
+    "fontFamilyComposer": "",
+    "fontFamilySans": "",
+    "fontFamilyTerminal": "",
+    "fontSmoothing": true,
+    "persistComposerContextStrip": false,
+    "pullRequestLinksOpenInApp": true,
+    "planModeEnabled": false,
+    "contextWindowMeterEnabled": false,
+    "composerRichTextEnabled": true,
+    "sendShortcut": "mod-enter",
+    "followUpBehavior": "steer",
+    "proactivePanelsEnabled": false,
+    "showSkillsInSlashMenu": true,
+    "boringSidebarEnabled": false,
+    "boringSidebarMultilineRows": false,
+    "threadDetailsUsageEnabled": false,
+    "threadDetailsItems": {
+      "usage": true,
+      "context": true
+    },
+    "legacySidebarEnabled": false,
+    "sidebarWorkingShelfEnabled": true,
+    "sidebarProjectGroupingMode": "repository",
+    "sidebarProjectSortOrder": "updated_at",
+    "sidebarThreadSortOrder": "updated_at",
+    "timestampFormat": "locale",
+    "snapShotEnabled": true,
+    "snapShotIncludeAccessibility": true,
+    "snapShotShortcut": {
+      "kind": "both-shift-keys"
+    },
+    "snapShotPlaySound": true,
+    "snapShotSound": "soft-pop",
+    "snapShotFlash": true,
+    "snapShotAnimations": true,
+    "wordWrap": true,
+    "mathRenderingEnabled": true
+  }
+}

@@ -7,6 +7,11 @@ AppData
 # scripts. Everything else lives in Ubuntu, and Windows keeps its own .gitconfig.
 .*
 !.wslconfig
+!.t3
+{{- end }}
+{{- if eq .chezmoi.os "linux" }}
+# No T3 desktop app on Linux; its server keeps its own settings.
+.t3
 {{- end }}
 {{- if ne .chezmoi.os "linux" }}
 # Linux only: the login banner switch, and BROWSER for WSL.
@@ -38,7 +43,11 @@ Library
 {{- else }}
 .cursor
 {{- end }}
-.t3
+# T3 Code: only the desktop app's UI settings.
+.t3/*
+!.t3/userdata
+.t3/userdata/*
+!.t3/userdata/client-settings.json
 .copilot
 
 # A machine's own agent instructions, and the improvements log, which can quote its sessions.

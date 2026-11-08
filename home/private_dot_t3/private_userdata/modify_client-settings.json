@@ -1,0 +1,2 @@
+{{- /* chezmoi:modify-template */ -}}
+{{- includeTemplate "json-keys" (dict "stdin" .chezmoi.stdin "keys" .t3ClientSettings) -}}
