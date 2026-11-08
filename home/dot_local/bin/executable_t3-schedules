@@ -1,0 +1,125 @@
+#!/usr/bin/env python3
+"""Compare T3 Code's scheduled tasks with their source files in ~/.config/t3-schedules.
+
+T3 keeps scheduled tasks only in its database, and only the `schedule_task` agent tool creates
+them, so the files are their source and an agent in T3 applies them.
+
+  t3-schedules check          one line per task, plus the schedule_task arguments that fix each
+                              task out of step. Exits 1 when any is.
+  t3-schedules export TITLE   print a task from T3 in the file format, to start its source file
+
+A file is front matter (title, project, schedule, thread, enabled) followed by the prompt. `project`
+is the T3 project's folder, `schedule` is the schedule_task object as JSON, and `thread` is `same`
+for a task that posts into one thread or `new` for a new thread per run. One-off tasks have no file.
+"""
+import json
+import os
+import sqlite3
+import sys
+from pathlib import Path
+
+FILES = Path.home() / ".config/t3-schedules"
+DB = Path(os.environ.get("T3CODE_HOME", Path.home() / ".t3")) / "userdata/statev2.sqlite"
+FIELDS = ("title", "project", "schedule", "thread", "enabled")
+
+
+def live_tasks():
+    db = sqlite3.connect(f"file:{DB}?mode=ro", uri=True)
+    rows = db.execute(
+        "select t.task_id, t.title, t.prompt, t.enabled, t.schedule_json, t.thread_id, p.workspace_root"
+        " from scheduled_tasks t left join projection_projects p on p.project_id = t.project_id"
+        " where json_extract(t.schedule_json, '$.type') != 'once'"
+    ).fetchall()
+    projects = dict(db.execute("select workspace_root, project_id from projection_projects"))
+    tasks = {}
+    for task_id, title, prompt, enabled, schedule, thread_id, root in rows:
+        tasks[title] = {
+            "id": task_id,
+            "title": title,
+            "project": root,
+            "schedule": json.loads(schedule),
+            "thread": "same" if thread_id else "new",
+            "enabled": bool(enabled),
+            "prompt": prompt.strip(),
+        }
+    return tasks, projects
+
+
+def read_file(path):
+    lines = path.read_text().splitlines()
+    if not lines or lines[0] != "---" or "---" not in lines[1:]:
+        sys.exit(f"!! {path}: no front matter between --- lines")
+    end = lines.index("---", 1)
+    task = {}
+    for line in lines[1:end]:
+        key, _, value = line.partition(": ")
+        task[key] = value
+    missing = [f for f in FIELDS if f not in task]
+    if missing:
+        sys.exit(f"!! {path}: missing {', '.join(missing)}")
+    task["project"] = str(Path(task["project"]).expanduser())
+    task["schedule"] = json.loads(task["schedule"])
+    task["enabled"] = task["enabled"] == "true"
+    task["prompt"] = "\n".join(lines[end + 1:]).strip()
+    return task
+
+
+def schedule_task_args(want, have, projects):
+    args = {"title": want["title"], "prompt": want["prompt"], "schedule": want["schedule"],
+            "enabled": want["enabled"]}
+    if have:
+        args["scheduledTaskId"] = have["id"]
+    else:
+        args["bindToCurrentThread"] = want["thread"] == "same"
+        args["projectId"] = projects.get(want["project"], f"<no T3 project for {want['project']}>")
+    return args
+
+
+def check():
+    have, projects = live_tasks()
+    want = {t["title"]: t for t in map(read_file, sorted(FILES.glob("*.md")))} if FILES.is_dir() else {}
+    out_of_step = 0
+    for title in sorted(want.keys() | have.keys()):
+        w, h = want.get(title), have.get(title)
+        if not w:
+            print(f"{title}: in T3 but has no file. Save it with `t3-schedules export '{title}'`")
+            out_of_step += 1
+            continue
+        if not h:
+            print(f"{title}: missing in T3. Create it with schedule_task:")
+        else:
+            differs = [f for f in ("project", "schedule", "thread", "enabled", "prompt") if w[f] != h[f]]
+            if not differs:
+                print(f"{title}: in sync")
+                continue
+            print(f"{title}: differs in {', '.join(differs)}. Update it with schedule_task:")
+            if "project" in differs or "thread" in differs:
+                print("  schedule_task can't move a task to another project or thread: delete it and create it again")
+        print("  " + json.dumps(schedule_task_args(w, h, projects)))
+        out_of_step += 1
+    print(f"{len(want)} files, {len(have)} recurring tasks in T3, {out_of_step} out of step")
+    return 1 if out_of_step else 0
+
+
+def export(title):
+    have, _ = live_tasks()
+    if title not in have:
+        sys.exit(f"!! no recurring task titled {title!r}. Titles: {', '.join(sorted(have))}")
+    t = have[title]
+    project = t["project"].replace(str(Path.home()), "~", 1)
+    print("---")
+    print(f"title: {t['title']}\nproject: {project}\nschedule: {json.dumps(t['schedule'])}")
+    print(f"thread: {t['thread']}\nenabled: {'true' if t['enabled'] else 'false'}")
+    print("---")
+    print(t["prompt"])
+    return 0
+
+
+if __name__ == "__main__":
+    if not DB.exists():
+        sys.exit(f"!! no T3 database at {DB}")
+    if sys.argv[1:2] == ["check"] and len(sys.argv) == 2:
+        sys.exit(check())
+    if sys.argv[1:2] == ["export"] and len(sys.argv) == 3:
+        sys.exit(export(sys.argv[2]))
+    sys.exit(__doc__)

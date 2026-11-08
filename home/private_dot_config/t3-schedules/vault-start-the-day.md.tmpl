@@ -1,0 +1,10 @@
+{{- if and .notesVault .notesDaily (stat (joinPath .notesVault .notesDaily "AGENTS.md")) -}}
+---
+title: Vault: start the day
+project: {{ .notesVault }}
+schedule: {"type": "fixed_time", "timeOfDay": "11:00", "weekdays": [1, 2, 3, 4, 5]}
+thread: same
+enabled: true
+---
+Start the day in the vault: follow "Start the day" in {{ .notesDaily }}/AGENTS.md, which ends by planning the day.
+{{ end -}}

@@ -1,0 +1,10 @@
+{{- if and .notesVault .notesSeeds (stat (joinPath .notesVault (dir .notesSeeds) "AGENTS.md")) -}}
+---
+title: Public profile: weekly harvest
+project: {{ .notesVault }}
+schedule: {"type": "fixed_time", "timeOfDay": "10:00", "weekdays": [6]}
+thread: same
+enabled: true
+---
+Weekly harvest for my public profile: follow "Weekly harvest" in {{ dir .notesSeeds }}/AGENTS.md. Draft only. Post nothing, and edit only {{ base .notesSeeds }} and posts.md.
+{{ end -}}

@@ -1,0 +1,20 @@
+{{- if .laptopHost -}}
+---
+title: Monthly laptop updates
+project: {{ if .work }}~/repos/dotfiles-work{{ else }}~/repos/dotfiles{{ end }}
+schedule: {"type": "interval", "everyMs": 2592000000}
+thread: new
+enabled: true
+---
+Monthly maintenance reminder for the dev's personal Windows laptop. Use the windows-lan-ssh skill (`ssh personal-laptop`). Report only, and change nothing until the dev says yes.
+
+1. Connect with the skill's connect step. If the laptop is unreachable, say so in one line and stop: it's asleep, off, or not on this Mac's Wi-Fi.
+2. Count what's pending, read-only:
+   - Ubuntu packages: `apt list --upgradable` (run through the skill's base64 form as root: `wsl -d Ubuntu -u root`).
+   - Homebrew in Ubuntu: `brew outdated`.
+   - mise tools in Ubuntu: `mise outdated`.
+   - Windows apps: `winget upgrade --disable-interactivity` (count the rows).
+   - WSL itself: `wsl --update --pre-release` is NOT wanted; just compare `wsl --version` with the latest stable if you can tell.
+3. Reply with a short table of counts and the notable items (major versions, security updates), then ask the dev one question: run the updates now?
+4. Only after a yes, run them: `sudo apt update && sudo apt full-upgrade` (as root via wsl -u root), `brew upgrade`, `mise upgrade`, and `winget upgrade --id <id>` for each app the dev agrees to. Windows Terminal comes from the Microsoft Store, so skip it in winget. Report what changed and anything that failed.
+{{ end -}}

@@ -1,0 +1,18 @@
+{{- if stat (joinPath .chezmoi.homeDir ".agents/improvements.md") -}}
+---
+title: Monthly backpass sweep
+project: {{ if .work }}~/repos/dotfiles-work{{ else }}~/repos/dotfiles{{ end }}
+schedule: {"type": "interval", "everyMs": 2592000000}
+thread: new
+enabled: true
+---
+Monthly backpass sweep of the global agent instructions.
+
+1. Read the "Monthly sweep with backpass" section at the top of `~/.agents/improvements.md` and follow it exactly: run the user-scope pass with the pinned Astra models, `--jobs 2` and `--include-cursor-ide`. It reads sessions and proposes edits, and writes nothing. If one Codex session fails to start, rerun the same command; cached analyses are reused.
+2. Read the proposal from `~/.config/backpass/user/proposal.json`: each edit's find and replace text, its rationale and its evidence quotes.
+3. Read {{ if stat (joinPath .chezmoi.homeDir ".agents/skills/t3-dev-loop/improvements.md") }}both improvement logs, `~/.agents/improvements.md` and `~/.agents/skills/t3-dev-loop/improvements.md`{{ else }}the improvements log, `~/.agents/improvements.md`{{ end }}, and note any proposal that matches an open entry.
+4. Report to the dev, BLUF first: one numbered item per edit with the exact text, the evidence, any matching log entry, and your recommendation (accept, or reject with one of backpass's reasons: wrong-evidence, already-covered, too-narrow, too-broad, disagree). Flag anything that only applies in T3 or one repo, since it belongs in that skill's or repo's file instead.
+5. Wait for the dev's verdicts. Then apply them with `backpass apply --scope user --decisions "..."`{{ if .work }}, close matching log entries, and record the run in the backpass item of section 10 in `~/repos/dotfiles-work/docs/dev-env-refresh.md`, committed.{{ else }}, and close matching log entries.{{ end }}
+
+If the proposal has no edits, say so and stop.
+{{ end -}}
