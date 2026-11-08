@@ -1,0 +1,26 @@
+{{- /* chezmoi:modify-template */ -}}
+{{- /*
+Adds the "T3 Dark" scheme from .chezmoidata/t3.toml, makes it every profile's default, and makes
+the Ubuntu profile the default one. Every other key passes through. While nothing differs, the
+file passes through untouched.
+*/ -}}
+{{- $current := dict }}
+{{- if .chezmoi.stdin }}{{ $current = fromJsonc .chezmoi.stdin }}{{ end }}
+{{- $merged := deepCopy $current }}
+{{- $t := .t3.terminal }}
+{{- $a := $t.ansi }}
+{{- $scheme := dict "name" "T3 Dark" "background" $t.background "foreground" $t.foreground "cursorColor" $t.cursor "selectionBackground" $t.selection_opaque "black" (index $a 0) "red" (index $a 1) "green" (index $a 2) "yellow" (index $a 3) "blue" (index $a 4) "purple" (index $a 5) "cyan" (index $a 6) "white" (index $a 7) "brightBlack" (index $a 8) "brightRed" (index $a 9) "brightGreen" (index $a 10) "brightYellow" (index $a 11) "brightBlue" (index $a 12) "brightPurple" (index $a 13) "brightCyan" (index $a 14) "brightWhite" (index $a 15) }}
+{{- $schemes := list }}
+{{- range (get $merged "schemes" | default list) }}{{ if ne (get . "name") "T3 Dark" }}{{ $schemes = append $schemes . }}{{ end }}{{ end }}
+{{- $_ := set $merged "schemes" (append $schemes $scheme) }}
+{{- $profiles := get $merged "profiles" | default dict }}
+{{- $defaults := get $profiles "defaults" | default dict }}
+{{- $_ := set $defaults "colorScheme" "T3 Dark" }}
+{{- $_ := set $profiles "defaults" $defaults }}
+{{- range (get $profiles "list" | default list) }}{{ if and (eq (get . "name") "Ubuntu") (eq (get . "source") "Microsoft.WSL") }}{{ $_ := set $merged "defaultProfile" (get . "guid") }}{{ end }}{{ end }}
+{{- $_ := set $merged "profiles" $profiles }}
+{{- if eq (toJson $current) (toJson $merged) }}
+{{- .chezmoi.stdin }}
+{{- else }}
+{{- toPrettyJson $merged }}{{ "\n" }}
+{{- end -}}

@@ -24,10 +24,10 @@ from pathlib import Path
 
 THEME = "[Ayu Dark]"
 SATURATION = 0.8  # chroma kept from Ayu's colors, 1.0 is the original theme
-SETTINGS = [
-    "~/Library/Application Support/Cursor/User/settings.json",
-    "~/Library/Application Support/Code/User/settings.json",
-]
+if sys.platform == "win32":
+    SETTINGS = [os.path.join(os.environ["APPDATA"], app, "User", "settings.json") for app in ("Cursor", "Code")]
+else:
+    SETTINGS = [f"~/Library/Application Support/{app}/User/settings.json" for app in ("Cursor", "Code")]
 
 with open(Path(__file__).resolve().parent.parent / "home/.chezmoidata/t3.toml", "rb") as f:
     T3 = tomllib.load(f)["t3"]
@@ -409,11 +409,13 @@ def main():
         return
     for settings in SETTINGS:
         settings = os.path.expanduser(settings)
-        with open(settings) as f:
+        if not os.path.exists(settings):
+            continue
+        with open(settings, encoding="utf-8") as f:
             text = f.read()
         for key, value in keys.items():
             text = write_key(text, key, value)
-        with open(settings, "w") as f:
+        with open(settings, "w", encoding="utf-8", newline="\n") as f:
             f.write(text)
         print("wrote", settings)
     write_obsidian(ayu)
