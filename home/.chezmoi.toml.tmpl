@@ -12,7 +12,7 @@
 {{- $laptopHost := promptStringOnce . "laptopHost" "Personal laptop address or empty" "" -}}
 {{- $laptopUser := promptStringOnce . "laptopUser" "Personal laptop Windows account or empty" "" -}}
 {{- $laptopKey := promptStringOnce . "laptopKey" "Personal laptop SSH key path or empty" "" -}}
-sourceDir = {{ joinPath .chezmoi.homeDir "repos/dotfiles" | quote }}
+sourceDir = {{ .chezmoi.workingTree | quote }}
 
 [git]
     autoCommit = true

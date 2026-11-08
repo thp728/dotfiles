@@ -1,19 +1,20 @@
 ---
 name: dotfiles
-description: Sync this machine's portable config with the chezmoi repo at ~/repos/dotfiles. Use after editing a file it manages (shell, git, starship, Ghostty, fzf, mise, uv, atuin, ~/.agents/AGENTS.md), before applying it, or when adding config that isn't work-only.
+description: Sync this machine's portable config with its configured chezmoi repo. Use after editing a file it manages (shell, git, starship, Ghostty, fzf, mise, uv, atuin, ~/.agents/AGENTS.md), before applying it, or when adding config that isn't work-only.
 ---
 
 # Portable dotfiles
 
-`~/repos/dotfiles` is a chezmoi source, rooted at `home/`, published on GitHub as `thp728/dotfiles`. A machine without GitHub access pushes it through `relay`, and the personal laptop's copies pull from its relay mirror. It holds config for every machine: this Mac, and Ubuntu under WSL plus a small Windows layer on the personal machine. `chezmoi managed` lists every file it tracks. On a work machine, the `dotfiles-work` skill covers the second source that sits on top.
+The portable checkout is `~/repos/personal/dotfiles` on the work Mac and `~/repos/dotfiles` on the personal laptop. It is a chezmoi source, rooted at `home/`, published on GitHub as `thp728/dotfiles`. A machine without GitHub access pushes it through `relay`, and the personal laptop's copies pull from its relay mirror. It holds config for every machine: this Mac, and Ubuntu under WSL plus a small Windows layer on the personal machine. `chezmoi managed` lists every file it tracks. On a work machine, the `dotfiles-work` skill covers the second source that sits on top.
 
 ## Sync
 
 Agents and apps edit the live files in `$HOME`, so the repo drifts behind them. Sync with:
 
 ```sh
-~/repos/dotfiles/.tools/sync.sh               # re-add, then apply
-~/repos/dotfiles/.tools/sync.sh --re-add-only # after editing a managed file
+dotfiles_repo="$(dirname "$(chezmoi source-path)")"
+"$dotfiles_repo/.tools/sync.sh"               # re-add, then apply
+"$dotfiles_repo/.tools/sync.sh" --re-add-only # after editing a managed file
 ```
 
 Templates are the exception: `chezmoi re-add` skips them, and `sync.sh` names them when they drift. `chezmoi managed --include templates` lists them. Make the edit in the source under `home/` instead, then `chezmoi apply`. `~/.agents/AGENTS.md` is one, and so are `.zprofile` and `.gitconfig`.

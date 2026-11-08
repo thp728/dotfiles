@@ -66,7 +66,7 @@ I run many agent threads in parallel and come back to each one cold, having forg
 - Watch for gaps that no instruction file or skill covers: a correction I give twice, a command or procedure you rebuilt by hand, a workaround for a tool failure, or a decision I made the same way twice.
 - Log each gap in `~/.agents/improvements.md` before you tell me about it. Read the log first, and add a sighting to a matching entry rather than starting a new one. The log's top says where a fix belongs and how to write the entry.
 - Edit an instruction file or skill only after I approve the entry.
-- chezmoi generates `~/.agents/AGENTS.md`, so never edit it directly. Edit `home/dot_agents/AGENTS.md.tmpl` in `~/repos/dotfiles`, or `~/.agents/AGENTS.work.md` for a machine's own section, then run `chezmoi apply`.
+- chezmoi generates `~/.agents/AGENTS.md`, so never edit it directly. Edit `home/dot_agents/AGENTS.md.tmpl` in `{{ .chezmoi.workingTree }}`, or `~/.agents/AGENTS.work.md` for a machine's own section, then run `chezmoi apply`.
 
 ## Maintaining this file
 
