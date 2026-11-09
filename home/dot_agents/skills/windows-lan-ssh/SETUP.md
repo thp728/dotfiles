@@ -31,7 +31,7 @@ Compare the fingerprint `ssh` shows with this, run on the laptop:
 ssh-keygen -lf C:\ProgramData\ssh\ssh_host_ed25519_key.pub
 ```
 
-Accept the key only when the two match exactly, and stop on a mismatch. After a planned reinstall, check the new fingerprint first, then remove the old line with `ssh-keygen -R <HostName from ~/.ssh/config>`.
+Accept the key only when the two match exactly, and stop on a mismatch. After a planned reinstall, check the new fingerprint first, then remove the old line with `ssh-keygen -R personal-laptop`.
 
 ## Agent key
 

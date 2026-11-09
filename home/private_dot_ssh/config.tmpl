@@ -3,6 +3,9 @@
 # same network. The windows-lan-ssh skill covers how agents use it.
 Host personal-laptop
     HostName {{ .laptopHost }}
+    # known_hosts keys the laptop by this name, not its address, so the address can change and an
+    # address that reaches another machine fails the host key check.
+    HostKeyAlias personal-laptop
     User "{{ .laptopUser }}"
     IdentityFile {{ .laptopKey }}
     IdentitiesOnly yes
