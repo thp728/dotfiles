@@ -5,7 +5,7 @@ theme = t3-dark
 font-family = JetBrainsMono Nerd Font
 font-size = 15
 font-thicken = true
-adjust-cell-height = 10%
+adjust-cell-height = 15%
 
 # Window
 window-padding-x = 10
