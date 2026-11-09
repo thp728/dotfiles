@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<!-- T3's server keeps 10 trace files of 10 MB, about 13 hours here. 150 covers the week the
+     weekly housekeeping report reads. T3 picks it up when it next starts. -->
+<plist version="1.0">
+<dict>
+	<key>Label</key>
+	<string>com.thp728.t3-trace-retention</string>
+	<key>ProgramArguments</key>
+	<array>
+		<string>/bin/launchctl</string>
+		<string>setenv</string>
+		<string>T3CODE_TRACE_MAX_FILES</string>
+		<string>150</string>
+	</array>
+	<key>RunAtLoad</key>
+	<true/>
+</dict>
+</plist>
