@@ -17,14 +17,15 @@ ssh personal-laptop '$p = [Security.Principal.WindowsPrincipal][Security.Princip
 
 Connected when it prints the Windows account from `~/.ssh/config`'s `User` line and the laptop's machine name. `admin: True` means every command runs with administrator rights and no UAC prompt, which is why the ask-first list below matters. When it fails:
 
-- `Could not resolve hostname`, or a timeout: the laptop is asleep, off or on another network, or its address changed. GlobalProtect can stop `.local` names resolving, so `laptopHost` in `~/.config/chezmoi/chezmoi.toml` holds an IP. Find the laptop's current one with the scan below, then set `laptopHost` to it and run `chezmoi apply`. The host key check proves which address is the laptop. If the scan finds nothing, ask the dev to wake the laptop and join this Mac's Wi-Fi.
+- `Could not resolve hostname`, or a timeout: the laptop is asleep, off or on another network, or its address changed. GlobalProtect can stop `.local` names resolving, so `laptopHost` in `~/.config/chezmoi/chezmoi.toml` holds an IP. The scan below prints the address on this Wi-Fi whose host key matches the laptop's, in about 4 seconds. Set `laptopHost` to it and run `chezmoi apply`. If it prints nothing, ask the dev to wake the laptop and join this Mac's Wi-Fi.
 
   ```sh
   net=$(ipconfig getifaddr en0 | cut -d. -f1-3)
-  for i in $(seq 1 254); do nc -z -G 1 "$net.$i" 22 2>/dev/null && echo "$net.$i" & done; wait
-  # for each address printed:
-  ssh -o HostName=<ip> -o BatchMode=yes -o ControlPath=none personal-laptop hostname
+  key=$(ssh-keygen -F personal-laptop | awk '$2=="ssh-ed25519" {print $3}')
+  ssh-keyscan -T 2 -t ed25519 $(seq -f "$net.%g" 1 254) 2>/dev/null | awk -v k="$key" '$3==k {print $1}'
   ```
+
+  A loop of `nc -z` probes hangs on some addresses, whatever its timeout flags say.
 - No output after 10 seconds: the shared connection is stale. Run `ssh -O exit personal-laptop`, then connect again.
 - `Connection refused`: the SSH server isn't running. Follow SETUP.md, "SSH server".
 - `Permission denied (publickey)`: the agent key isn't installed. Follow SETUP.md, "Agent key".
