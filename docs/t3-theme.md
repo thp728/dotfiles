@@ -6,7 +6,7 @@ palette and `fzfrc` from it, and [`themes/editor-colors.py`](../themes/editor-co
 for Cursor, VS Code, and Obsidian in the notes vault. Change a color there, not here. Read on 5 Nov 2026 from T3 Code 0.1.7's own
 files: the stylesheet `apps/server/dist/client/assets/main-C6Cjx1mu.css` and the terminal drawer
 script `ThreadTerminalDrawer-9EIdX1Sz.js`, inside
-`/Applications/T3 Code (Beta).app/Contents/Resources/app.asar`. The dev runs the default theme: no
+`~/Applications/T3 Code (Beta).app/Contents/Resources/app.asar`. The dev runs the default theme: no
 theme id is stored, and `~/.t3/userdata/themes` is empty. T3 also ships `ember`, `grove`, `iris`,
 `ocean` and `t3-chat`. oklch values are converted to sRGB hex.
 
