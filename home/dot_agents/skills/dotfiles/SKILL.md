@@ -46,3 +46,5 @@ Each machine answers `home/.chezmoi.toml.tmpl` once, at `chezmoi init`: `work`, 
 ## Leaving this machine
 
 Ask the dev before pushing the repo anywhere or copying it, or a bundle of it, off this machine. Backups run on demand only: `.tools/backup.sh`, with `DOTFILES_BACKUP_DIR` set.
+
+`relay` (`relay help`) pushes a repo to GitHub through its mirror on the personal laptop, and only a machine with `laptopHost` gets it. The pre-push hook that `relay init` installs rejects commits whose author or committer email matches a `relay.blockedEmail` pattern in git config, then runs gitleaks with the same rules as the pre-commit hook. A work machine keeps its pattern in `~/.config/git/local.gitconfig`, and there the hook refuses every push until one is set. The mirror's pre-receive hook scans again with `.gitleaks.toml` before it forwards to GitHub.

@@ -6,7 +6,7 @@
 set -euo pipefail
 
 zero=0000000000000000000000000000000000000000
-rules="$HOME/repos/dotfiles/.gitleaks.toml"
+rules={{ joinPath .chezmoi.workingTree ".gitleaks.toml" | quote }}
 forward=()
 
 while read -r old new ref; do
