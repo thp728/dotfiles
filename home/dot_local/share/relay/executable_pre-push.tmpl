@@ -2,13 +2,16 @@
 # pre-push hook that `relay init` installs in each repo it sets up. For the `laptop` remote only:
 # rejects commits whose author or committer email matches a `relay.blockedEmail` pattern from git
 # config, and anything gitleaks flags, before the commits leave this machine. A machine's
-# ~/.config/gitleaks/work.toml layers its own rules on the repo's, so the scan prefers it.
+# ~/.config/gitleaks/work.toml layers its own rules on the repo's, so the scan prefers it. A repo
+# whose content names the employer by design, such as a notes vault, sets `relay.workRules false`
+# in its own git config to scan with the portable rules alone.
 set -euo pipefail
 
 [ "$1" = laptop ] || exit 0
 zero=0000000000000000000000000000000000000000
 rules="$HOME/.config/gitleaks/work.toml"
-[ -f "$rules" ] || rules={{ joinPath .chezmoi.workingTree ".gitleaks.toml" | quote }}
+[ "$(git config --type=bool --get relay.workRules || echo true)" = true ] || rules=
+[ -n "$rules" ] && [ -f "$rules" ] || rules={{ joinPath .chezmoi.workingTree ".gitleaks.toml" | quote }}
 blocked=$(git config --get-all relay.blockedEmail || true)
 {{- if .work }}
 if [ -z "$blocked" ]; then
