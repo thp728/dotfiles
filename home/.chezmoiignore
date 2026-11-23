@@ -20,8 +20,8 @@ AppData
 {{- end }}
 {{- if not .laptopHost }}
 # relay pushes through the personal laptop, so only a machine that knows its address gets it.
+# Its pre-push scanner goes everywhere: on the laptop it guards pushes into the local mirrors.
 .local/bin/relay
-.local/share/relay/pre-push
 {{- end }}
 {{- if ne .chezmoi.os "darwin" }}
 # Ghostty has no Windows or WSL build.
