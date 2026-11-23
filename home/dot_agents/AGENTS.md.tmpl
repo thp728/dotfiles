@@ -42,7 +42,7 @@ I run many agent threads in parallel and come back to each one cold, having forg
 
 - Local overrides: if the project root has an untracked `AGENTS.override.md`, read it before starting. It takes precedence over the project's `AGENTS.md`. In a git worktree without its own copy, read the main checkout's. Codex loads it without being told.
 - In T3 Code, when the `t3_thread_*` tools are present, load the `t3-threads` skill before you launch, message or settle a thread, delegate, or schedule a task.
-{{- if .personalVault }}
+{{- if and .personalVault (ne .personalVault .notesVault) }}
 - My personal vault, Life OS, is `{{ .personalVault }}`. Its `AGENTS.md` routes to the note that owns each topic and sets the rules for writing there. Write there only when I ask.
 {{- end }}
 {{- if .notesVault }}
@@ -52,6 +52,8 @@ I run many agent threads in parallel and come back to each one cold, having forg
   {{- if stat (joinPath .notesVault "AGENTS.md") }} The vault's own `AGENTS.md` has the rules for searching it and writing to it.{{ end }} Write there only when I ask.
 {{- if and .work .notesDaily .personalVault }}
 - When I say "note this" in any thread, first decide whether it's work or personal. If you can't tell, ask me. A work note goes in as one line under `## Capture` in today's daily note in the work vault (`{{ .notesDaily }}/<YYYY-MM-DD>.md`), with the project name and the thread's link. If today's note doesn't exist yet, create it as that folder's `AGENTS.md` describes. A personal note becomes an agent capture in Life OS, as the Capture section of its `system/operating-guidelines.md` describes. A personal action becomes a Todoist task, made through Life OS's Todoist tool.
+{{- else if .personalVault }}
+- When I say "note this" in any thread, it becomes an agent capture in Life OS (`{{ .personalVault }}`), as the Capture section of its `system/operating-guidelines.md` describes. A personal action becomes a Todoist task, made through Life OS's Todoist tool.
 {{- else if .notesDaily }}
 - When I say "note this" in any thread, add it as one line under `## Capture` in today's daily note in the vault (`{{ .notesDaily }}/<YYYY-MM-DD>.md`), with the project name and the thread's link. If today's note doesn't exist yet, create it as that folder's `AGENTS.md` describes.
 {{- end }}
