@@ -1,0 +1,10 @@
+{{- if and .personalVault (stat (joinPath .personalVault "resources/media-digest.md")) -}}
+---
+title: Media digest: weekly retention
+project: {{ .personalVault }}
+schedule: {"type": "fixed_time", "timeOfDay": "10:00", "weekdays": [0]}
+thread: same
+enabled: true
+---
+Read AGENTS.md and resources/media-digest.md. Follow its weekly-retention rules. Run the review in this thread, capped at 30 minutes of active review time excluding gaps between visits. If a session is pending, post one short reminder and do not start another question set. Otherwise consider completed items for useful ideas, combine duplicates, honor exclusions and retirements, and prioritize weak answers and the longest-overdue ideas. Ask only the first question, without revealing the notes, then wait for Tejas. Continue one question at a time through explanation and application. Give corrections and suggest forgotten, partial or solid for Tejas to confirm. Record only confirmed results; unanswered questions never count as reviewed. Solid answers advance through intervals of 2, 4, 8 and 16 weeks, then remain at 16 weeks; forgotten or partial answers reset to next week. Persist source links, review state, results, next-due dates and session progress in resources/media-digest.md, rereading and checking for concurrent changes before batched edits and committing each one. Let excess reviews remain due rather than extending the budget. Do not change the Consume queue, daily pick or schedules.
+{{ end -}}

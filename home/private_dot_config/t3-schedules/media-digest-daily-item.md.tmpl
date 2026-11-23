@@ -1,0 +1,10 @@
+{{- if and .personalVault (stat (joinPath .personalVault "resources/media-digest.md")) -}}
+---
+title: Media digest: daily item
+project: {{ .personalVault }}
+schedule: {"type": "fixed_time", "timeOfDay": "10:00"}
+thread: same
+enabled: true
+---
+Read AGENTS.md and resources/media-digest.md. Follow its daily-item rules. If an item is open, post one reminder without selecting another. Otherwise present the top Consume item, at most once per local day, with title, creator, link, length, reason, an evidence-labelled summary, what to expect, and a likely/unlikely Chrome listening flag. Say when source access or duration is unavailable. Include searchable title and creator for finding it on the phone. Update only Today's item after rereading and checking for concurrent changes, then commit that edit on its own. If the queue is empty, suggest a sweep in one line.
+{{ end -}}
