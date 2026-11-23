@@ -3,6 +3,7 @@
 {{- $name := promptStringOnce . "name" "Git name" "" -}}
 {{- $email := promptStringOnce . "email" "Git email" "" -}}
 {{- $localEmail := promptStringOnce . "localEmail" "Git email for local-only repos or empty" "" -}}
+{{- $personalVault := promptStringOnce . "personalVault" "Personal vault path or empty" "" -}}
 {{- $notesVault := promptStringOnce . "notesVault" "Notes vault path or empty" "" -}}
 {{- $notesProfile := promptStringOnce . "notesProfile" "Profile note path in the vault or empty" "" -}}
 {{- $notesIndex := promptStringOnce . "notesIndex" "Index note path in the vault or empty" "" -}}
@@ -23,6 +24,7 @@ sourceDir = {{ .chezmoi.workingTree | quote }}
     name = {{ $name | quote }}
     email = {{ $email | quote }}
     localEmail = {{ $localEmail | quote }}
+    personalVault = {{ $personalVault | quote }}
     notesVault = {{ $notesVault | quote }}
     notesProfile = {{ $notesProfile | quote }}
     notesIndex = {{ $notesIndex | quote }}
