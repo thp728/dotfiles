@@ -10,7 +10,8 @@ them, so the files are their source and an agent in T3 applies them.
 
 A file is front matter (title, project, schedule, thread, enabled) followed by the prompt. `project`
 is the T3 project's folder, `schedule` is the schedule_task object as JSON, and `thread` is `same`
-for a task that posts into one thread or `new` for a new thread per run. One-off tasks have no file.
+for a task that posts into one thread, `fresh` for one thread with a fresh session each run, or `new`
+for a new thread per run. One-off tasks have no file.
 """
 import json
 import os
@@ -26,19 +27,19 @@ FIELDS = ("title", "project", "schedule", "thread", "enabled")
 def live_tasks():
     db = sqlite3.connect(f"file:{DB}?mode=ro", uri=True)
     rows = db.execute(
-        "select t.task_id, t.title, t.prompt, t.enabled, t.schedule_json, t.thread_id, p.workspace_root"
+        "select t.task_id, t.title, t.prompt, t.enabled, t.schedule_json, t.thread_id, t.thread_mode, p.workspace_root"
         " from scheduled_tasks t left join projection_projects p on p.project_id = t.project_id"
         " where json_extract(t.schedule_json, '$.type') != 'once'"
     ).fetchall()
     projects = dict(db.execute("select workspace_root, project_id from projection_projects"))
     tasks = {}
-    for task_id, title, prompt, enabled, schedule, thread_id, root in rows:
+    for task_id, title, prompt, enabled, schedule, thread_id, thread_mode, root in rows:
         tasks[title] = {
             "id": task_id,
             "title": title,
             "project": root,
             "schedule": json.loads(schedule),
-            "thread": "same" if thread_id else "new",
+            "thread": "fresh" if thread_mode == "fresh_session" else "same" if thread_id else "new",
             "enabled": bool(enabled),
             "prompt": prompt.strip(),
         }
@@ -71,6 +72,7 @@ def schedule_task_args(want, have, projects):
         args["scheduledTaskId"] = have["id"]
     else:
         args["bindToCurrentThread"] = want["thread"] == "same"
+        args["freshSession"] = want["thread"] == "fresh"
         args["projectId"] = projects.get(want["project"], f"<no T3 project for {want['project']}>")
     return args
 
