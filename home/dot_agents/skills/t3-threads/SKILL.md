@@ -22,6 +22,13 @@ This is how the user runs work across T3 Code threads. Where a thread's own brie
 - Web research and independent audits go to a Codex delegate: `delegate_task` with provider `codex`, model `gpt-6.1-sol`, `reasoningEffort: "high"` and `runtimeMode: "auto"`. Always pass `auto`: Codex fails to start in full access.
 - **Fanout** means two or more subagents or delegates running at once. Explain the tradeoff and wait for the user's yes, unless a skill they invoked calls for it. A single background subagent while you keep working doesn't count as fanout.
 
+## Models
+
+- Work projects (the work vault and the work repos) default to Cursor, model `claude-opus-5-5`, effort high.
+- Personal projects and "No project" default to Claude: instance `claudeAgent`, model `bedrock.anthropic.claude-opus-5-5[1m]`, effort high.
+- Scheduled threads run on Claude on both sides, as described under Scheduled tasks.
+- `t3_thread_launch` gives the new thread your model unless you pass one, so pass the target project's default.
+
 ## Decision rounds
 
 Bring consequential choices to the user in numbered rounds. Each question carries the background and options it needs:
