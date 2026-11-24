@@ -53,6 +53,7 @@ List each batch's paths by vault. Use two threads that message each other only w
 - Routines run in the project of the vault they write to. The Work Vault project runs the morning brief, start the day, the public-profile harvest and the work weekly review. The Personal Vault project runs the Life OS weekly review and the Media digest's tasks. Machine and T3 housekeeping runs in the Personal Dotfiles project.
 - Cover both sides where a routine's subject spans them: the morning brief adds a Personal section, the harvest a personal side, and the work weekly review proposes the personal items it finds as Life OS captures. Each vault's own rules still govern its writes.
 - Bind each routine family to a single thread, and run it on Claude. Cursor stops when the organisation hits its monthly limit.
+- Every scheduled prompt opens with a tool gate. The run checks each tool it uses before doing anything. If one fails, it stops, names the tool with its error and the fix, and waits for the user. After the user fixes it, the run checks again and continues. It never carries on with a gap. An MCP server that failed at session start loads only in a new session, so a prompt that uses one names its own task ID for `run_scheduled_task_now` and runs with `thread: fresh`.
 - Each task's source file lives in the dotfiles repo that its paths belong to. The `dotfiles` skill covers `t3-schedules`.
 
 ## Inbox
