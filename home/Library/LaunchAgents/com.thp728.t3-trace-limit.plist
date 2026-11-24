@@ -1,17 +1,18 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
-<!-- T3's server keeps 10 trace files of 10 MB, about 13 hours here. 150 covers the week the
-     weekly housekeeping report reads. T3 picks it up when it next starts. -->
+<!-- Caps T3's server traces at 40 files of 10 MB, about 400 MB: one or two busy days. It deletes
+     nothing itself. T3 rotates by size, and at its next start removes files numbered above the
+     cap. T3's default is 10; 150 filled about 1.5 GB in three busy days. -->
 <plist version="1.0">
 <dict>
 	<key>Label</key>
-	<string>com.thp728.t3-trace-retention</string>
+	<string>com.thp728.t3-trace-limit</string>
 	<key>ProgramArguments</key>
 	<array>
 		<string>/bin/launchctl</string>
 		<string>setenv</string>
 		<string>T3CODE_TRACE_MAX_FILES</string>
-		<string>150</string>
+		<string>40</string>
 	</array>
 	<key>RunAtLoad</key>
 	<true/>
