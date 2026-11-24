@@ -12,6 +12,9 @@ AppData
 {{- if eq .chezmoi.os "linux" }}
 # No T3 desktop app on Linux; its server keeps its own settings.
 .t3
+# T3's scheduled tasks run in the Mac's T3. The laptop's T3 has none, so sources here would have
+# its `t3-schedules check` ask for duplicates of the Mac's tasks.
+.config/t3-schedules
 {{- end }}
 {{- if ne .chezmoi.os "linux" }}
 # Linux only: the login banner switch, and BROWSER for WSL.
