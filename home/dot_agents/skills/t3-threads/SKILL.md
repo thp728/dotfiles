@@ -50,7 +50,8 @@ List each batch's paths by vault. Use two threads that message each other only w
 
 ## Scheduled tasks
 
-- Work routines run in the Work Vault project: the morning brief, start the day, the public-profile harvest and the work weekly review. Personal routines, such as the Media digest's, run in the Personal Vault project. Machine and T3 housekeeping runs in the Personal Dotfiles project.
+- Routines run in the project of the vault they write to. The Work Vault project runs the morning brief, start the day, the public-profile harvest and the work weekly review. The Personal Vault project runs the Life OS weekly review and the Media digest's tasks. Machine and T3 housekeeping runs in the Personal Dotfiles project.
+- Cover both sides where a routine's subject spans them: the morning brief adds a Personal section, the harvest a personal side, and the work weekly review proposes the personal items it finds as Life OS captures. Each vault's own rules still govern its writes.
 - Bind each routine family to a single thread, and run it on Claude. Cursor stops when the organisation hits its monthly limit.
 - Each task's source file lives in the dotfiles repo that its paths belong to. The `dotfiles` skill covers `t3-schedules`.
 
