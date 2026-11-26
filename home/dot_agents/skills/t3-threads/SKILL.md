@@ -1,6 +1,6 @@
 ---
 name: t3-threads
-description: How the user's work is split across T3 Code threads, covering coordinator and worker threads, subagents and delegates, decision rounds, settling, messages between threads, scheduled tasks, and work that spans both vaults. Use when T3's thread tools are present, before launching, messaging or settling a thread, delegating, or scheduling a task.
+description: How the user's work is split across T3 Code threads, covering coordinator and worker threads, subagents and delegates, decision rounds, settling, messages between threads, scheduled tasks, and work that spans both vaults, and which browser to use. Use when T3's thread tools are present, before launching, messaging or settling a thread, delegating, scheduling a task, or doing browser work.
 ---
 
 # T3 threads
@@ -55,6 +55,10 @@ List each batch's paths by vault. Use two threads that message each other only w
 - Bind each routine family to a single thread, and run it on Claude. Cursor stops when the organisation hits its monthly limit.
 - Every scheduled prompt opens with a tool gate. The run checks each tool it uses before doing anything. If one fails, it stops, names the tool with its error and the fix, and waits for the user. After the user fixes it, the run checks again and continues. It never carries on with a gap. An MCP server that failed at session start loads only in a new session, so a prompt that uses one names its own task ID for `run_scheduled_task_now` and runs with `thread: fresh`.
 - Each task's source file lives in the dotfiles repo that its paths belong to. The `dotfiles` skill covers `t3-schedules`.
+
+## Browsers
+
+"Browser" on its own means T3's preview browser, driven through the `preview_*` tools. Use another browser only when the user names it, such as Chrome, Edge or Brave. When the preview browser can't do the job, such as a sign-in it can't pass, say so and ask which browser to use.
 
 ## Inbox
 
