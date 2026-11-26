@@ -78,6 +78,7 @@ Read-only commands and changes to what the task names go ahead. These wait for t
 
 - a reboot or shutdown
 - installing or uninstalling software, including `winget`, `wsl --install` and `apt`
+  - `winget` can't start over SSH: its alias and its DesktopAppInstaller path both fail with `Access is denied`. Install from the vendor's installer, or ask the dev to run `winget` on the laptop.
 - deleting files outside the task
 - changing Windows settings, the registry or services
 - copying anything from this Mac to the laptop
